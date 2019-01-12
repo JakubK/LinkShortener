@@ -1,0 +1,38 @@
+.navbar
+{
+  height: 60px;
+  background-color: #9B59B6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px 0 20px;
+  box-sizing: border-box;
+  color: white;
+}
+
+.navbar-buttons
+{
+  margin-right: 15px;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.navbar-buttons button
+{
+  margin: 0 5px 0 5px;
+
+  background-color: transparent;
+  outline: none;
+  border: 1px solid white;
+  padding: 10px;
+  color: white;
+}
+
+.navbar-buttons button:hover
+{
+  background: white;
+  color: #9B59B6;
+  cursor: pointer;
+}
+
+

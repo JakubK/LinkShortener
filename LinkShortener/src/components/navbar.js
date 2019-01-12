@@ -6,7 +6,15 @@ class Navbar extends React.Component
 {
   render()
   {
-    return <h1>Hello</h1>
+    return (
+    <nav className="navbar">
+      <div>LinkShortener</div>
+      <div className="navbar-buttons">
+        <button>About</button>
+        <button>Sign in / up</button>
+      </div>
+    </nav>
+    )
   }
 }
 
