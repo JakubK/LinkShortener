@@ -1,0 +1,30 @@
+.footer
+{
+  height: 60px;
+  background-color: #9B59B6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px 10px 20px;
+  box-sizing: border-box;
+  color: white;
+}
+
+.github-icon
+{
+  background: none;
+  border: none;
+  height: 50px;
+  width: 50px;
+  outline: none;
+}
+
+.github-icon:hover
+{
+  cursor: pointer;
+}
+
+.github-icon path
+{
+  fill: white;
+}
