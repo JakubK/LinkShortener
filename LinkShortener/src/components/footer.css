@@ -12,10 +12,11 @@
 
 .github-icon
 {
+  display: block;
   background: none;
   border: none;
-  height: 50px;
-  width: 50px;
+  height: 45px;
+  width: 45px;
   outline: none;
 }
 
@@ -27,4 +28,10 @@
 .github-icon path
 {
   fill: white;
+}
+
+.link-github
+{
+  text-decoration: none;
+  color: white;
 }
