@@ -1,0 +1,44 @@
+.auth-container
+{
+  background-color: #ECF0F1;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-panel
+{
+  background-color: #FFFFFF;
+  width: 500px;
+  height: 600px;;
+}
+
+.panel-options
+{
+  display: flex;
+
+}
+
+.panel-options a
+{
+  display: block;
+  width: 50%;
+  height: 60px;
+  background: #9B59B6;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-decoration: none;
+  color: white;
+}
+
+.panel-options a.selected
+{
+  background: #8E44AD;
+}
