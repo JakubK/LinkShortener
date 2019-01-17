@@ -14,13 +14,15 @@
 {
   background-color: #FFFFFF;
   width: 500px;
-  height: 600px;;
+  height: 500px;
+  border-radius: 0 0 10px 10px;
+
+  position: relative;
 }
 
 .panel-options
 {
   display: flex;
-
 }
 
 .panel-options a
@@ -41,4 +43,54 @@
 .panel-options a.selected
 {
   background: #8E44AD;
+}
+
+.action-buttons
+{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  bottom: 50px;
+
+  position: absolute;
+}
+.action-buttons > div 
+{
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+}
+
+.action-buttons button 
+{
+  height: 40px;
+  margin-bottom: 10px;
+
+  border: none;
+  outline: none;
+  color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+}
+
+.action-buttons button svg
+{
+  height: 30px;
+  position: absolute;
+  right: 30px;
+}
+
+.btn-continue
+{
+  background: #2ECC71;
+}
+
+.btn-back
+{
+  background: #E74C3C;
 }
