@@ -5,15 +5,17 @@ import * as serviceWorker from './serviceWorker';
 import { Route,  BrowserRouter as Router, Switch } from 'react-router-dom'
 
 import App from './App';
+import About from './components/about/about'
 import Auth from './components/auth/auth'
 import SignIn from './components/auth/signin'
 import SignUp from './components/auth/signup'
+import Navbar from './components/navbar/navbar';
+import Footer from './components/footer/footer';
 
 const routing = (
   <Router>
-    <div>
-      <Route exact path="/" component={App}/>
-      <Route path="/sign">
+    <Switch>
+    <Route path="/sign">
         <Auth>
             <Switch>
               <Route path="/sign/in" component={SignIn}/>
@@ -21,7 +23,17 @@ const routing = (
             </Switch>
         </Auth>
       </Route>
-    </div>
+      <Route path="/">
+        <div>
+          <Navbar/>
+            <Switch>
+              <Route exact path="/" component={App}/>
+              <Route exact path="/about" component={About}/>
+            </Switch>
+          <Footer/>
+        </div>
+      </Route>
+    </Switch>
   </Router>
 )
 
