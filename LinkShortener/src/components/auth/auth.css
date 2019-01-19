@@ -94,3 +94,33 @@
 {
   background: #E74C3C;
 }
+
+.protected-panel
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 70%;
+}
+
+.protected-info
+{
+  width: 100%;
+  border-radius: 20px;
+  margin-top: -20px;
+  background: #9B59B6;
+  text-align: center;
+  color: white;
+  font-weight: normal;
+}
+
+.icon-lock
+{
+  height: 100px;
+}
+
+.icon-lock path 
+{
+  fill: #7F8C8D;
+}
