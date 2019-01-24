@@ -11,6 +11,7 @@ import SignIn from './components/auth/signin'
 import SignUp from './components/auth/signup'
 import Navbar from './components/navbar/navbar';
 import Footer from './components/footer/footer';
+import Panel from './components/panel/panel';
 import ProtectedLink from './components/auth/protectedLink';
 
 const routing = (
@@ -31,6 +32,7 @@ const routing = (
               <Navbar/>
               <Switch>
               <Route exact path="/" component={App}/>
+              <Route exact path="/panel" component={Panel}/>
               <Route exact path="/about" component={About}/>
               <Route exact path="/:hash" render={({match}) =>
               (

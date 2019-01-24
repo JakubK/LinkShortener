@@ -1,0 +1,63 @@
+.panel-container
+{
+  display: flex;
+  height: calc(100vh - 120px);
+}
+
+.account-settings
+{
+  width: 20%;
+  background: #ECF0F1;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-frame
+{
+  border-radius: 100%;
+  background: white;
+  width: 150px;
+  height: 150px;
+  padding: 10px;
+}
+
+.profile-icon
+{
+  width: 80%;
+  height: 80%;
+}
+
+.profile-icon path 
+{
+  fill: #ECF0F1;
+}
+
+.account-links
+{
+  width: 80%;
+  background: #FFFFFF;
+  padding: 10px;
+}
+
+.links-table
+{
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+
+.links-table td,th
+{
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.links-table tbody tr
+{
+  border-top: 1px solid black;
+}
