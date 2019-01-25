@@ -13,38 +13,45 @@ import Navbar from './components/navbar/navbar';
 import Footer from './components/footer/footer';
 import Panel from './components/panel/panel';
 import ProtectedLink from './components/auth/protectedLink';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import reducers from './reducers'
+
+const store = createStore(reducers);
 
 const routing = (
-  <Router>
-    <Switch>
-      <Route path="/sign">
-          <Auth>
-              <Switch>
-                <Route path="/sign/in" component={SignIn}/>
-                <Route path="/sign/up" component={SignUp}/>
-              </Switch>
-          </Auth>
-        </Route>
-        <Route exact path="/link/:hash" component={ProtectedLink}/>
-        <Switch>
-          <Route path="/">
-            <div>
-              <Navbar/>
-              <Switch>
-              <Route exact path="/" component={App}/>
-              <Route exact path="/panel" component={Panel}/>
-              <Route exact path="/about" component={About}/>
-              <Route exact path="/:hash" render={({match}) =>
-              (
-                <Redirect to={`/link/${match.params.hash}`} />
-              )}/>
-              </Switch>
-              <Footer/>
-            </div>
+  <Provider store={store}>
+    <Router>
+      <Switch>
+        <Route path="/sign">
+            <Auth>
+                <Switch>
+                  <Route path="/sign/in" component={SignIn}/>
+                  <Route path="/sign/up" component={SignUp}/>
+                </Switch>
+            </Auth>
           </Route>
+          <Route exact path="/link/:hash" component={ProtectedLink}/>
+          <Switch>
+            <Route path="/">
+              <div>
+                <Navbar/>
+                <Switch>
+                <Route exact path="/" component={App}/>
+                <Route exact path="/panel" component={Panel}/>
+                <Route exact path="/about" component={About}/>
+                <Route exact path="/:hash" render={({match}) =>
+                (
+                  <Redirect to={`/link/${match.params.hash}`} />
+                )}/>
+                </Switch>
+                <Footer/>
+              </div>
+            </Route>
+          </Switch>
         </Switch>
-      </Switch>
-  </Router>
+    </Router>
+  </Provider>
 )
 
 ReactDOM.render(routing, document.getElementById('root'));
