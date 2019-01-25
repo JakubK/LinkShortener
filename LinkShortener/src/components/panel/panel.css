@@ -42,6 +42,7 @@
   width: 80%;
   background: #FFFFFF;
   padding: 10px;
+  overflow-y: scroll;
 }
 
 .links-table
