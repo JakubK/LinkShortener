@@ -76,6 +76,8 @@
   align-items: center;
 
   position: relative;
+  width: 100%;
+  text-decoration: none;
 }
 
 .action-buttons button svg
@@ -85,12 +87,17 @@
   right: 30px;
 }
 
-.btn-continue
+.link-continue, .link-back
+{
+  text-decoration: none;
+}
+
+.link-continue > button
 {
   background: #2ECC71;
 }
 
-.btn-back
+.link-back > button
 {
   background: #E74C3C;
 }

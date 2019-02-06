@@ -9,6 +9,12 @@
   color: white;
 }
 
+.nav-brand
+{
+  text-decoration: none;
+  color: white;
+}
+
 .navbar-buttons
 {
   margin-right: 15px;
@@ -16,10 +22,11 @@
   flex-wrap: nowrap;
 }
 
-.navbar-buttons button
+.navbar-buttons .nav-button
 {
   margin: 0 5px 0 5px;
-
+  display: block;
+  text-decoration: none;
   background-color: transparent;
   outline: none;
   border: 1px solid white;
@@ -27,7 +34,7 @@
   color: white;
 }
 
-.navbar-buttons button:hover
+.navbar-buttons .nav-button:hover
 {
   background: white;
   color: #9B59B6;
