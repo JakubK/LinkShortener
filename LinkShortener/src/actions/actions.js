@@ -1,1 +1,2 @@
 export const LINKS_LOADED = 'LINKS_LOADED';
+export const TOKEN_ACQUIRED = 'TOKEN_ACQUIRED';

@@ -17,7 +17,14 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import reducers from './reducers'
 
-const store = createStore(reducers);
+
+let token = localStorage.getItem('token');
+const store = createStore(reducers, {token: token});
+
+store.subscribe(() =>
+{
+  localStorage.setItem('token', store.getState().token);
+});
 
 const routing = (
   <Provider store={store}>

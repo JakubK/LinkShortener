@@ -1,8 +1,9 @@
 
 import React from 'react'
 import './home.css'
+import { connect } from 'react-redux';
 
-class Home extends React.Component
+class HomeStub extends React.Component
 {
   render()
   {
@@ -21,5 +22,13 @@ class Home extends React.Component
     )
   }
 }
+
+const mapStateToProps = ({token}) => {
+  return {
+    token: token.token
+  };
+};
+
+const Home = connect(mapStateToProps)(HomeStub);
 
 export default Home;
