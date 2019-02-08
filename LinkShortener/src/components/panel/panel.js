@@ -24,39 +24,36 @@ class Panel extends React.Component
               <tr><th>Short Link</th><th>Long Link</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>localhost:8080/asdasxASx</td>
-                <td>google.com/asdasxASx</td>
-                <td>
-                  <button>Copy to clipboard</button>
-                  <button>Set password</button>
-                  <button>Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td>localhost:8080/asdasxASx</td>
-                <td>google.com/asdasxASx</td>
-                <td>
-                  <button>Copy to clipboard</button>
-                  <button>Set password</button>
-                  <button>Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td>localhost:8080/asdasxASx</td>
-                <td>google.com/asdasxASx</td>
-                <td>
-                  <button>Copy to clipboard</button>
-                  <button>Set password</button>
-                  <button>Delete</button>
-                </td>
-              </tr>
+              { this.TableRow(this.props.linksTable) }
             </tbody>
           </table>
         </div>
       </main>
     );
   }
+
+   TableRow(linksTable) {
+     if(linksTable !== undefined)
+     {
+      let arr = [];
+      for(let i = 0;i < linksTable.length;i++)
+      {
+        arr.push(
+        <tr>
+          <td>{ linksTable[i].shortUrl}</td>
+          <td>{ linksTable[i].longUrl}</td>
+          <td>
+            <button>Copy to clipboard</button>
+            <button>Set password</button>
+            <button>Delete</button>
+          </td>
+        </tr>
+        );
+      }
+      return arr;
+    }
+  }
 }
+
 
 export default Panel;
