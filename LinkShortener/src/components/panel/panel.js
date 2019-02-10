@@ -3,6 +3,40 @@ import './panel.css'
 
 class Panel extends React.Component
 {
+  constructor()
+  {
+    super();
+    this.state =
+    {
+      linksTable: [{shortUrl: "x", longUrl: "D"},{shortUrl: "xA", longUrl: "DA"},{shortUrl: "xC", longUrl: "DC"}]
+    };
+
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleCopy = this.handleCopy.bind(this);
+  }
+
+  handleDelete(i)
+  {
+    let array = [...this.state.linksTable];
+    array.splice(i,1);
+    this.setState({linksTable: array});
+
+    //call the API and the modify the Store
+  }
+
+  handleCopy(i)
+  {
+    const el = document.createElement('textarea');
+    el.value = this.state.linksTable[i].shortUrl;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  }
+
   render()
   {
     return (
@@ -24,7 +58,7 @@ class Panel extends React.Component
               <tr><th>Short Link</th><th>Long Link</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              { this.TableRow(this.props.linksTable) }
+              { this.TableRow(this.state.linksTable) }
             </tbody>
           </table>
         </div>
@@ -39,13 +73,13 @@ class Panel extends React.Component
       for(let i = 0;i < linksTable.length;i++)
       {
         arr.push(
-        <tr>
+        <tr key={i}>
           <td>{ linksTable[i].shortUrl}</td>
           <td>{ linksTable[i].longUrl}</td>
           <td>
-            <button>Copy to clipboard</button>
+            <button  onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
             <button>Set password</button>
-            <button>Delete</button>
+            <button onClick={() => this.handleDelete(i)}>Delete</button>
           </td>
         </tr>
         );
@@ -53,6 +87,7 @@ class Panel extends React.Component
       return arr;
     }
   }
+
 }
 
 
