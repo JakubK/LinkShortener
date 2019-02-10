@@ -1,6 +1,7 @@
 import React from 'react'
 import './sign.css'
 import { NavLink } from 'react-router-dom'
+import axios from 'axios'
 
 class SignUp extends React.Component
 {
@@ -23,12 +24,29 @@ class SignUp extends React.Component
     const target = event.target;
     const value = target.value;
     const name = target.name;
+
     this.setState({[name]: value});
   }
 
-  handleSubmit()
-  {
-    console.log("Sending register request");
+  async handleSubmit()
+  {    
+      let data = JSON.stringify({
+        email: this.state.emailAddress,
+        password: this.state.password
+      });
+      await axios.post("url", data, {
+        headers:
+        {
+          'Content-Type' : 'application/json'
+        }
+      }).then(response =>
+        {
+          //if API created an account then redirect to /login
+
+          //if something went wrong then show the message
+
+          
+        });
   }
 
   render()

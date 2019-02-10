@@ -1,6 +1,7 @@
 import React from 'react'
 import './sign.css'
 import { NavLink } from 'react-router-dom'
+import axios from 'axios'
 
 class SignIn extends React.Component
 {
@@ -27,9 +28,25 @@ class SignIn extends React.Component
     this.setState({[name]: value});
   }
 
-  handleSubmit()
+  async handleSubmit()
   {
-    console.log("Sending Log request");
+    //validation required
+
+    let data = JSON.stringify({
+      email: this.state.emailAddress,
+      password: this.state.password
+    });
+    await axios.post("url", data, {
+      headers:
+      {
+        'Content-Type' : 'application/json'
+      }
+    }).then(response =>
+      {
+        //if API returned a token, then store it and redirect the user to the panel 
+
+        //if the status code is unathorized then show the message
+      });  
   }
 
   render()
