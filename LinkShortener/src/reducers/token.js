@@ -7,6 +7,7 @@ const token = (state = {items: []}, action) =>
         return Object.assign({}, state, {
             token: action.payload.token,
         }); 
+        
     default:
         return state;
   }

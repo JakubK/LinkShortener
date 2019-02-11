@@ -1,25 +1,29 @@
 import React from 'react'
 import './panel.css'
+import PasswordField from './passwordField'
+import {INIT_PASSWORD_SET, LINKS_LOADED,LINK_REMOVED} from '../../actions/actions'
 
-class Panel extends React.Component
+import { connect } from 'react-redux';
+
+class PanelStub extends React.Component
 {
-  constructor()
+  componentDidMount()
   {
-    super();
-    this.state =
-    {
-      linksTable: [{shortUrl: "x", longUrl: "D"},{shortUrl: "xA", longUrl: "DA"},{shortUrl: "xC", longUrl: "DC"}]
-    };
-
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleCopy = this.handleCopy.bind(this);
+    //Fetch Links array;
+    this.props.dispatch({
+      type: LINKS_LOADED,
+      payload: [{shortUrl: "x", longUrl: "D"},{shortUrl: "xA", longUrl: "DA"},{shortUrl: "xC", longUrl: "DC"}]
+    });
   }
 
   handleDelete(i)
   {
-    let array = [...this.state.linksTable];
-    array.splice(i,1);
-    this.setState({linksTable: array});
+    this.props.dispatch(
+      {
+        type: LINK_REMOVED,
+        payload: i
+      }
+    );
 
     //call the API and the modify the Store
   }
@@ -37,10 +41,24 @@ class Panel extends React.Component
     document.body.removeChild(el);
   }
 
+  handleSetPassword(i)
+  {
+    let action = {
+      type: INIT_PASSWORD_SET,
+      payload: i     
+    };
+
+    this.props.dispatch(action)
+  }
+
   render()
   {
     return (
       <main className="panel-container">
+       {
+          this.props.modifiedRecord !== undefined &&
+         <PasswordField/>
+        }
         <div className="account-settings">
           <div className="profile-frame">
             <svg className="profile-icon" aria-hidden="true" data-prefix="fas" data-icon="user-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 288c79.5 0 144-64.5 144-144S335.5 0 256 0 112 64.5 112 144s64.5 144 144 144zm128 32h-55.1c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16H128C57.3 320 0 377.3 0 448v16c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48v-16c0-70.7-57.3-128-128-128z"></path></svg>
@@ -58,7 +76,7 @@ class Panel extends React.Component
               <tr><th>Short Link</th><th>Long Link</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              { this.TableRow(this.state.linksTable) }
+              { this.TableRow(this.props.linksTable) }
             </tbody>
           </table>
         </div>
@@ -77,8 +95,8 @@ class Panel extends React.Component
           <td>{ linksTable[i].shortUrl}</td>
           <td>{ linksTable[i].longUrl}</td>
           <td>
-            <button  onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
-            <button>Set password</button>
+            <button onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
+            <button onClick={() => this.handleSetPassword(i)}>Set password</button>
             <button onClick={() => this.handleDelete(i)}>Delete</button>
           </td>
         </tr>
@@ -90,5 +108,13 @@ class Panel extends React.Component
 
 }
 
+const mapStateToProps = ({panel, links}) => {
+  return {
+    modifiedRecord: panel.modifiedRecord,
+    linksTable: links.linksTable
+  };
+};
+
+const Panel = connect(mapStateToProps)(PanelStub);
 
 export default Panel;
