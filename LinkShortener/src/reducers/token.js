@@ -1,6 +1,6 @@
 import {TOKEN_ACQUIRED} from '../actions/actions'
 
-const token = (state = {items: []}, action) => 
+const token = (state = {}, action) => 
 {
   switch (action.type) {
     case TOKEN_ACQUIRED:

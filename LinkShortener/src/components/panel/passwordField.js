@@ -14,7 +14,6 @@ class PasswordFieldStub extends React.Component
     }
   
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleInputChange(event)
@@ -32,10 +31,10 @@ class PasswordFieldStub extends React.Component
     {
       let modifiedTable = this.props.linksTable;
       modifiedTable[this.props.modifiedRecord].password = this.state.password;
+      
       this.props.dispatch({
         type: FINISH_PASSWORD_SET,
         payload: {
-          index: this.props.modifiedRecord,
           payload: modifiedTable
         }
       });
@@ -66,8 +65,6 @@ class PasswordFieldStub extends React.Component
       </div>
     );
   }
-
-
 }
 
 const mapStateToProps = ({panel, links}) => {

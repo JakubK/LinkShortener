@@ -1,6 +1,6 @@
 import {LINKS_LOADED,LINK_REMOVED} from '../actions/actions';
 
-const links = (state = {items: []}, action) => {
+const links = (state = {} , action) => {
   switch (action.type) {
       case LINKS_LOADED:
           return Object.assign({}, state, {

@@ -1,7 +1,7 @@
 import React from 'react'
 import './panel.css'
 import PasswordField from './passwordField'
-import {INIT_PASSWORD_SET, LINKS_LOADED,LINK_REMOVED} from '../../actions/actions'
+import {INIT_PASSWORD_SET, LINKS_LOADED,LINK_REMOVED, PASSWORD_REMOVED} from '../../actions/actions'
 
 import { connect } from 'react-redux';
 
@@ -12,7 +12,7 @@ class PanelStub extends React.Component
     //Fetch Links array;
     this.props.dispatch({
       type: LINKS_LOADED,
-      payload: [{shortUrl: "x", longUrl: "D"},{shortUrl: "xA", longUrl: "DA"},{shortUrl: "xC", longUrl: "DC"}]
+      payload: [{shortUrl: "x", longUrl: "D", password: "XD"},{shortUrl: "xA", longUrl: "DA"},{shortUrl: "xC", longUrl: "DC", password: "ASDASD"}]
     });
   }
 
@@ -31,7 +31,7 @@ class PanelStub extends React.Component
   handleCopy(i)
   {
     const el = document.createElement('textarea');
-    el.value = this.state.linksTable[i].shortUrl;
+    el.value = this.props.linksTable[i].shortUrl;
     el.setAttribute('readonly', '');
     el.style.position = 'absolute';
     el.style.left = '-9999px';
@@ -49,6 +49,22 @@ class PanelStub extends React.Component
     };
 
     this.props.dispatch(action)
+  }
+
+  handleRemovePassword(i)
+  {
+    let modifiedTable = this.props.linksTable;
+    delete modifiedTable[i].password;
+    let action = {
+      type: PASSWORD_REMOVED,
+      payload: {
+        linksTable: modifiedTable,
+        index: i
+      }
+    };
+
+    this.props.dispatch(action)
+    this.forceUpdate();
   }
 
   render()
@@ -96,7 +112,14 @@ class PanelStub extends React.Component
           <td>{ linksTable[i].longUrl}</td>
           <td>
             <button onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
+            {
+             linksTable[i].password !== undefined && 
+            <button onClick={() => this.handleRemovePassword(i)}>Remove password</button>
+            }
+            {
+             linksTable[i].password === undefined && 
             <button onClick={() => this.handleSetPassword(i)}>Set password</button>
+            }
             <button onClick={() => this.handleDelete(i)}>Delete</button>
           </td>
         </tr>
