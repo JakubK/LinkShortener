@@ -2,7 +2,7 @@ import React from 'react'
 import './passwordField.css'
 import { connect } from 'react-redux';
 
-import {PASSWORD_FINISH_SET} from '../../actions/actions'
+import {PASSWORD_FINISH_SET, PASSWORD_NOT_SET} from '../../actions/actions'
 
 class PasswordFieldStub extends React.Component
 {
@@ -38,7 +38,9 @@ class PasswordFieldStub extends React.Component
 
   handleClose()
   {
-
+    this.props.dispatch({
+      type: PASSWORD_NOT_SET
+    });
   }
 
   render()

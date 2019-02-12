@@ -1,4 +1,4 @@
-import {LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_FINISH_SET, PASSWORD_REMOVED} from '../actions/actions';
+import {LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_FINISH_SET, PASSWORD_REMOVED, PASSWORD_NOT_SET, LINK_CHANGED} from '../actions/actions';
 
 const links = (state = {linksTable: []} , action) => {
   switch (action.type) {
@@ -23,6 +23,15 @@ const links = (state = {linksTable: []} , action) => {
         return Object.assign({}, state, {
             linksTable: [...action.payload]
         })
+    case PASSWORD_NOT_SET:
+        return Object.assign({}, state,
+            {
+                modifiedRecord: undefined
+            });
+    case LINK_CHANGED:
+        return Object.assign({}, state, {
+            linksTable: [...action.payload]
+        });
       default:
           return state;
   }

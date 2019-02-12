@@ -62,3 +62,14 @@
 {
   border-top: 1px solid black;
 }
+
+tr:hover
+{
+  background: lightgray;
+}
+
+td:nth-child(1):hover,td:nth-child(2):hover
+{
+  background: darkgray;
+  cursor: pointer;
+}

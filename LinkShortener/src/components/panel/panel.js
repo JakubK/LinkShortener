@@ -1,12 +1,23 @@
 import React from 'react'
 import './panel.css'
 import PasswordField from './passwordField'
-import {LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_REMOVED } from '../../actions/actions'
+import {LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_REMOVED, LINK_CHANGED } from '../../actions/actions'
 
 import { connect } from 'react-redux';
 
 class PanelStub extends React.Component
 {
+  constructor()
+  {
+    super();
+    this.state ={
+      modifiedField: '',
+      modifiedId: ''
+    }
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
   componentDidMount()
   {
     //Fetch Links array;
@@ -41,6 +52,52 @@ class PanelStub extends React.Component
     document.body.removeChild(el);
   }
 
+  handleLongLinkRename(e, i)
+  {
+    if(e.target.type !== 'submit')
+    {
+      this.setState({
+        modifiedField: "longUrl",
+        modifiedId: i
+      });
+    }
+  }
+
+  handleShortLinkRename(e, i)
+  {
+    if(e.target.type !== 'submit')
+    {
+      this.setState({
+        modifiedField: "shortUrl",
+        modifiedId: i
+      });
+    }
+  }
+
+  handleLinkRenameSubmit(e)
+  {
+    e.preventDefault();
+
+    let modifiedTable = [...this.props.linksTable];
+    if(this.state.modifiedField === 'shortUrl')
+    {
+      modifiedTable[this.state.modifiedId].shortUrl = this.state.shortUrl;
+    }
+    else
+    {
+      modifiedTable[this.state.modifiedId].longUrl = this.state.longUrl;
+    }
+
+    this.props.dispatch({
+      type: LINK_CHANGED,
+      payload: modifiedTable
+    });
+
+    this.setState({
+      modifiedId: undefined
+    });
+  }
+
   handleSetPassword(i)
   {
     this.props.dispatch({
@@ -51,12 +108,21 @@ class PanelStub extends React.Component
 
   handleRemovePassword(i)
   {
-  let modifiedTable = [...this.props.linksTable];
-  modifiedTable[i].password = undefined;
-   this.props.dispatch({
-     type: PASSWORD_REMOVED,
-     payload: modifiedTable
-   });
+    let modifiedTable = [...this.props.linksTable];
+    modifiedTable[i].password = undefined;
+    this.props.dispatch({
+      type: PASSWORD_REMOVED,
+      payload: modifiedTable
+    });
+  }
+
+  handleInputChange(event)
+  {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+    this.setState({[name]: value});
+
   }
 
   render()
@@ -87,20 +153,29 @@ class PanelStub extends React.Component
               {
               this.props.linksTable.map((element,i) => (
               <tr key={i}>
-                <td>{ element.shortUrl}</td>
-              <td>{ element.longUrl}</td>
-              <td>
-                <button onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
-                {
-                element.password !== undefined && 
-                <button onClick={() => this.handleRemovePassword(i)}>Remove password</button>
-                }
-                {
-                element.password === undefined && 
-                <button onClick={() => this.handleSetPassword(i)}>Set password</button>
-                }
-                <button onClick={() => this.handleDelete(i)}>Delete</button>
-              </td>
+                <td onClick={(e) => this.handleShortLinkRename(e,i)}>
+
+                  { (this.state.modifiedId !== i || this.state.modifiedField !== 'shortUrl') && element.shortUrl}
+                  { (this.state.modifiedId === i && this.state.modifiedField === 'shortUrl') && <div><input name="shortUrl" onChange={(e) => this.handleInputChange(e)} type="text"/><button onClick={(e) => this.handleLinkRenameSubmit(e)}>Submit</button></div>}
+
+                </td>
+                <td onClick={(e) => this.handleLongLinkRename(e,i)}>
+                
+                  { (this.state.modifiedId !== i || this.state.modifiedField !== 'longUrl') && element.longUrl}
+                  { (this.state.modifiedId === i && this.state.modifiedField === 'longUrl') && <div><input name="longUrl" onChange={(e) => this.handleInputChange(e)} type="text"/><button onClick={(e) => this.handleLinkRenameSubmit(e)}>Submit</button></div>}                
+                </td>
+                <td>
+                  <button onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
+                  {
+                    element.password !== undefined && 
+                    <button onClick={() => this.handleRemovePassword(i)}>Remove password</button>
+                  }
+                  {
+                    element.password === undefined && 
+                    <button onClick={() => this.handleSetPassword(i)}>Set password</button>
+                  }
+                  <button onClick={() => this.handleDelete(i)}>Delete</button>
+                </td>
               </tr>
                ))
               }
