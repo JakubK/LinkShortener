@@ -1,7 +1,8 @@
 import React from 'react'
 import './passwordField.css'
 import { connect } from 'react-redux';
-import {FINISH_PASSWORD_SET,FINISH_PASSWORD_NOT_SET} from '../../actions/actions'
+
+import {PASSWORD_FINISH_SET} from '../../actions/actions'
 
 class PasswordFieldStub extends React.Component
 {
@@ -25,26 +26,19 @@ class PasswordFieldStub extends React.Component
     this.setState({[name]: value});
   }
 
-  handleSubmit(definedPassword)
+  handleSubmit()
   {
-    if(definedPassword)
-    {
-      let modifiedTable = this.props.linksTable;
-      modifiedTable[this.props.modifiedRecord].password = this.state.password;
-      
-      this.props.dispatch({
-        type: FINISH_PASSWORD_SET,
-        payload: {
-          payload: modifiedTable
-        }
-      });
-    }
-    else
-    {
-      this.props.dispatch({
-        type: FINISH_PASSWORD_NOT_SET,
-      });
-    }
+  let modifiedTable = [...this.props.linksTable];
+  modifiedTable[this.props.modifiedRecord].password = this.state.password;
+   this.props.dispatch({
+     type: PASSWORD_FINISH_SET,
+     payload: modifiedTable
+   });
+  }
+
+  handleClose()
+  {
+
   }
 
   render()
@@ -53,13 +47,13 @@ class PasswordFieldStub extends React.Component
       <div className="modal-frame">
         <div className="modal-panel">
           <div className="panel-heading">
-            <button onClick={() => this.handleSubmit(false)}></button>
+            <button onClick={() => this.handleClose()}></button>
           </div>
           <div className="panel-body">
             <h4>Set a Password for your link</h4>
             <input name="password" onChange={this.handleInputChange} type="password"/>
             <br/>
-            <button onClick={() => this.handleSubmit(true)}>Submit</button>
+            <button onClick={() => this.handleSubmit()}>Submit</button>
           </div>
         </div>
       </div>
@@ -67,9 +61,9 @@ class PasswordFieldStub extends React.Component
   }
 }
 
-const mapStateToProps = ({panel, links}) => {
+const mapStateToProps = ({links}) => {
   return {
-    modifiedRecord: panel.modifiedRecord,
+    modifiedRecord: links.modifiedRecord,
     linksTable: links.linksTable
   };
 };

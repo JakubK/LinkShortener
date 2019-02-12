@@ -1,7 +1,7 @@
 import React from 'react'
 import './panel.css'
 import PasswordField from './passwordField'
-import {INIT_PASSWORD_SET, LINKS_LOADED,LINK_REMOVED, PASSWORD_REMOVED} from '../../actions/actions'
+import {LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_REMOVED } from '../../actions/actions'
 
 import { connect } from 'react-redux';
 
@@ -43,28 +43,20 @@ class PanelStub extends React.Component
 
   handleSetPassword(i)
   {
-    let action = {
-      type: INIT_PASSWORD_SET,
-      payload: i     
-    };
-
-    this.props.dispatch(action)
+    this.props.dispatch({
+      type: PASSWORD_INIT_SET,
+      payload: i
+    });
   }
 
   handleRemovePassword(i)
   {
-    let modifiedTable = this.props.linksTable;
-    delete modifiedTable[i].password;
-    let action = {
-      type: PASSWORD_REMOVED,
-      payload: {
-        linksTable: modifiedTable,
-        index: i
-      }
-    };
-
-    this.props.dispatch(action)
-    this.forceUpdate();
+  let modifiedTable = [...this.props.linksTable];
+  modifiedTable[i].password = undefined;
+   this.props.dispatch({
+     type: PASSWORD_REMOVED,
+     payload: modifiedTable
+   });
   }
 
   render()
@@ -92,7 +84,26 @@ class PanelStub extends React.Component
               <tr><th>Short Link</th><th>Long Link</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              { this.TableRow(this.props.linksTable) }
+              {
+              this.props.linksTable.map((element,i) => (
+              <tr key={i}>
+                <td>{ element.shortUrl}</td>
+              <td>{ element.longUrl}</td>
+              <td>
+                <button onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
+                {
+                element.password !== undefined && 
+                <button onClick={() => this.handleRemovePassword(i)}>Remove password</button>
+                }
+                {
+                element.password === undefined && 
+                <button onClick={() => this.handleSetPassword(i)}>Set password</button>
+                }
+                <button onClick={() => this.handleDelete(i)}>Delete</button>
+              </td>
+              </tr>
+               ))
+              }
             </tbody>
           </table>
         </div>
@@ -108,6 +119,7 @@ class PanelStub extends React.Component
       {
         arr.push(
         <tr key={i}>
+      
           <td>{ linksTable[i].shortUrl}</td>
           <td>{ linksTable[i].longUrl}</td>
           <td>
@@ -131,9 +143,9 @@ class PanelStub extends React.Component
 
 }
 
-const mapStateToProps = ({panel, links}) => {
+const mapStateToProps = ({links}) => {
   return {
-    modifiedRecord: panel.modifiedRecord,
+    modifiedRecord: links.modifiedRecord,
     linksTable: links.linksTable
   };
 };
