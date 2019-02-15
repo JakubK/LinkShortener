@@ -106,5 +106,6 @@ venv.bak/
 # PyCharm files
 .idea/
 
-#other
+# other stuff
 .txt
+migrations/
