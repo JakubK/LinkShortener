@@ -32,6 +32,7 @@
   border: 1px solid white;
   padding: 10px;
   color: white;
+  font-size:14px;
 }
 
 .navbar-buttons .nav-button:hover
@@ -40,5 +41,3 @@
   color: #9B59B6;
   cursor: pointer;
 }
-
-
