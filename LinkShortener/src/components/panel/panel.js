@@ -196,6 +196,26 @@ class PanelStub extends React.Component
       });
     }
 
+    this.setState({
+      modifiedField: undefined
+    });
+  }
+  
+  handleChangeEmail(e)
+  {
+    e.preventDefault();
+
+    let data = qs.stringify({
+      action: 'changeUserEmail',
+      token: this.props.token,
+      newEmail: this.state.newEmail
+    });
+
+    axios.post(http_config.BASE,data,{
+      headers:{
+        'Content-Type' : 'application/x-www-form-urlencoded'
+      }
+    });
 
     this.setState({
       modifiedField: undefined
@@ -216,7 +236,16 @@ class PanelStub extends React.Component
           </div>
           <div>
             <label>example@example.com</label><br/>
-            <button>Change</button>
+            {this.state.modifiedField !== 'email' &&
+            <button onClick={() => this.setState({modifiedField: 'email'})}>Change</button>
+            }
+            {this.state.modifiedField === 'email' &&
+              <form onSubmit={(e) => this.handleChangeEmail(e)}>
+                <label>New Email</label><br/>
+                <input name="newEmail" type="text" onChange={(e) => this.handleInputChange(e)}/><br/>
+                <button type="submit">Submit</button>
+              </form>
+            }
           </div>
           {this.state.modifiedField !== 'password' && 
           <button onClick={() => this.setState({modifiedField : 'password'})}>Reset password</button>
