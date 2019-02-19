@@ -1,7 +1,8 @@
 import React from 'react'
 import './passwordField.css'
 import { connect } from 'react-redux';
-
+import axios from 'axios'
+import {http_config} from '../../http/http_config'
 import {PASSWORD_FINISH_SET, PASSWORD_NOT_SET} from '../../actions/actions'
 
 class PasswordFieldStub extends React.Component
@@ -28,12 +29,22 @@ class PasswordFieldStub extends React.Component
 
   handleSubmit()
   {
-  let modifiedTable = [...this.props.linksTable];
-  modifiedTable[this.props.modifiedRecord].password = this.state.password;
-   this.props.dispatch({
-     type: PASSWORD_FINISH_SET,
-     payload: modifiedTable
-   });
+    let modifiedTable = [...this.props.linksTable];
+    modifiedTable[this.props.modifiedRecord].password = this.state.password;
+   
+    let data = modifiedTable[this.props.modifiedRecord];
+    axios.put(http_config.BASE, data, {
+      headers:
+      {
+        'Content-Type' : 'application/x-www-form-urlencoded'
+      }
+    }).then(response =>
+      {
+        this.props.dispatch({
+          type: PASSWORD_FINISH_SET,
+          payload: modifiedTable
+        });
+      }); 
   }
 
   handleClose()

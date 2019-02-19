@@ -2,6 +2,8 @@ import React from 'react'
 import './sign.css'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios'
+import qs from 'qs'
+import {http_config} from '../../http/http_config'
 
 class SignUp extends React.Component
 {
@@ -30,23 +32,26 @@ class SignUp extends React.Component
 
   async handleSubmit()
   {    
-      let data = JSON.stringify({
-        email: this.state.emailAddress,
-        password: this.state.password
-      });
-      await axios.post("url", data, {
-        headers:
+    let data = qs.stringify({
+      action: 'createUser',
+      email: this.state.emailAddress,
+      password: this.state.password
+    });
+    await axios.post(http_config.BASE, data, {
+      headers:
+      {
+        'Content-Type' : 'application/x-www-form-urlencoded'
+      }
+    }).then(response =>
+      {
+        //if API created an account then redirect to /login
+        
+        //if something went wrong then show the message
+        if(response.status === 201)
         {
-          'Content-Type' : 'application/json'
+          this.props.history.push('/sign/in');
         }
-      }).then(response =>
-        {
-          //if API created an account then redirect to /login
-
-          //if something went wrong then show the message
-
-          
-        });
+      });
   }
 
   render()

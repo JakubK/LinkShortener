@@ -2,8 +2,13 @@ import React from 'react'
 import './sign.css'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios'
+import qs from 'qs'
+import {TOKEN_ACQUIRED} from '../../actions/actions'
+import {http_config} from '../../http/http_config'
+import { connect } from 'react-redux';
 
-class SignIn extends React.Component
+
+class SignInStub extends React.Component
 {
 
   constructor()
@@ -31,22 +36,31 @@ class SignIn extends React.Component
   async handleSubmit()
   {
     //validation required
-
-    let data = JSON.stringify({
+    let data = qs.stringify({
+      action: 'loginUserIn',
       email: this.state.emailAddress,
       password: this.state.password
     });
 
-    await axios.post("url", data, {
+    await axios.post(http_config.BASE, data, {
       headers:
       {
-        'Content-Type' : 'application/json'
+        'Content-Type' : 'application/x-www-form-urlencoded'
       }
     }).then(response =>
       {
         //if API returned a token, then store it and redirect the user to the panel 
-
-        //if the status code is unathorized then show the message
+        if(response.status === 200)
+        {
+          this.props.dispatch(
+            {
+              type: TOKEN_ACQUIRED,
+              payload: response.data.split(':')[1].trim()
+            }
+          );
+          console.log(response.data);
+          this.props.history.push('/panel');
+        }
       });  
   }
 
@@ -77,5 +91,14 @@ class SignIn extends React.Component
     )
   }
 }
+
+const mapStateToProps = ({token}) => {
+  return {
+    token: token.token
+  };
+};
+
+const SignIn = connect(mapStateToProps)(SignInStub);
+
 
 export default SignIn;

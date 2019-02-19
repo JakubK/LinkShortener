@@ -4,6 +4,8 @@ import PasswordField from './passwordField'
 import {LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_REMOVED, LINK_CHANGED } from '../../actions/actions'
 
 import { connect } from 'react-redux';
+import axios from 'axios';
+import {http_config} from '../../http/http_config'
 
 class PanelStub extends React.Component
 {
@@ -20,23 +22,53 @@ class PanelStub extends React.Component
 
   componentDidMount()
   {
-    //Fetch Links array;
-    this.props.dispatch({
-      type: LINKS_LOADED,
-      payload: [{shortUrl: "x", longUrl: "D", password: "XD"},{shortUrl: "xA", longUrl: "DA"},{shortUrl: "xC", longUrl: "DC", password: "ASDASD"}]
+    //Fetch Links array
+    let data = JSON.stringify({
+      action: 'getUserLinks',
+      token: this.props.token
     });
+    axios.post(http_config.BASE, data, {
+      headers:
+      {
+        'Content-Type' : 'application/x-www-form-urlencoded'
+      }
+    }).then(response =>
+      {
+        //if API returned a token, then store it and redirect the user to the panel 
+        if(response.status === 200)
+        {
+          this.props.dispatch(
+            {
+              type: LINKS_LOADED,
+              payload: response.data.token
+            }
+          );
+          this.props.history.push('/panel');
+        }
+      });  
   }
 
   handleDelete(i)
   {
-    this.props.dispatch(
-      {
-        type: LINK_REMOVED,
-        payload: i
-      }
-    );
+    let data = {
+      linkToRemove: this.props.linksTable[i],
+      token: this.props.token
+    }
 
-    //call the API and the modify the Store
+    axios.delete(http_config.BASE, data, {
+      headers:
+      {
+        'Content-Type' : 'application/x-www-form-urlencoded'
+      }
+    }).then(response =>
+      {
+        this.props.dispatch(
+          {
+            type: LINK_REMOVED,
+            payload: i
+          }
+        );
+      }); 
   }
 
   handleCopy(i)
@@ -77,7 +109,6 @@ class PanelStub extends React.Component
   handleLinkRenameSubmit(e)
   {
     e.preventDefault();
-
     let modifiedTable = [...this.props.linksTable];
     if(this.state.modifiedField === 'shortUrl')
     {
@@ -88,14 +119,29 @@ class PanelStub extends React.Component
       modifiedTable[this.state.modifiedId].longUrl = this.state.longUrl;
     }
 
-    this.props.dispatch({
-      type: LINK_CHANGED,
-      payload: modifiedTable
-    });
+    let data = 
+    {
+      index: this.state.modifiedId,
+      link: modifiedTable[this.state.modifiedId],
+      token: this.props.token
+    };
 
-    this.setState({
-      modifiedId: undefined
-    });
+    axios.put(http_config.BASE, data, {
+      headers:
+      {
+        'Content-Type' : 'application/x-www-form-urlencoded'
+      }
+    }).then(response =>
+      {
+        this.props.dispatch({
+          type: LINK_CHANGED,
+          payload: modifiedTable
+        });
+    
+        this.setState({
+          modifiedId: undefined
+        });
+      }); 
   }
 
   handleSetPassword(i)
@@ -110,10 +156,20 @@ class PanelStub extends React.Component
   {
     let modifiedTable = [...this.props.linksTable];
     modifiedTable[i].password = undefined;
-    this.props.dispatch({
-      type: PASSWORD_REMOVED,
-      payload: modifiedTable
-    });
+
+    let data = modifiedTable[i];
+    axios.put(http_config.BASE, data, {
+      headers:
+      {
+        'Content-Type' : 'application/x-www-form-urlencoded'
+      }
+    }).then(response =>
+      {
+        this.props.dispatch({
+          type: PASSWORD_REMOVED,
+          payload: modifiedTable
+        });
+      }); 
   }
 
   handleInputChange(event)
@@ -122,7 +178,6 @@ class PanelStub extends React.Component
     const value = target.value;
     const name = target.name;
     this.setState({[name]: value});
-
   }
 
   render()
@@ -215,7 +270,6 @@ class PanelStub extends React.Component
       return arr;
     }
   }
-
 }
 
 const mapStateToProps = ({links}) => {
