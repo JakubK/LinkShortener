@@ -1,4 +1,4 @@
-import {TOKEN_ACQUIRED} from '../actions/actions'
+import {TOKEN_ACQUIRED, TOKEN_FORGOT} from '../actions/actions'
 
 const token = (state = {}, action) => 
 {
@@ -7,7 +7,10 @@ const token = (state = {}, action) =>
         return Object.assign({}, state, {
             token: action.payload.token,
         }); 
-        
+    case TOKEN_FORGOT:
+        return Object.assign({}, state, {
+            token: undefined
+        });
     default:
         return state;
   }

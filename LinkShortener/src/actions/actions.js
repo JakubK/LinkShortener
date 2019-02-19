@@ -1,4 +1,5 @@
 export const TOKEN_ACQUIRED = 'TOKEN_ACQUIRED';
+export const TOKEN_FORGOT = 'TOKEN_FORGOT';
 
 export const LINKS_LOADED = 'LINKS_LOADED';
 export const LINK_REMOVED = 'LINK_REMOVED';
