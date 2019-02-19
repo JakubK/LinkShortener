@@ -3,8 +3,9 @@ import './panel.css'
 import PasswordField from './passwordField'
 import {LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_REMOVED, LINK_CHANGED } from '../../actions/actions'
 
-import { connect } from 'react-redux';
-import axios from 'axios';
+import { connect } from 'react-redux'
+import axios from 'axios'
+import qs from 'qs'
 import {http_config} from '../../http/http_config'
 
 class PanelStub extends React.Component
@@ -14,7 +15,11 @@ class PanelStub extends React.Component
     super();
     this.state ={
       modifiedField: '',
-      modifiedId: ''
+      modifiedId: '',
+      newEmail: '',
+      oldPassword: '',
+      newPassword: '',
+      newPasswordRepeat: ''
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -40,7 +45,7 @@ class PanelStub extends React.Component
           this.props.dispatch(
             {
               type: LINKS_LOADED,
-              payload: response.data.token
+              payload: response.data
             }
           );
           this.props.history.push('/panel');
@@ -111,28 +116,21 @@ class PanelStub extends React.Component
     e.preventDefault();
     let modifiedTable = [...this.props.linksTable];
     if(this.state.modifiedField === 'shortUrl')
-    {
       modifiedTable[this.state.modifiedId].shortUrl = this.state.shortUrl;
-    }
     else
-    {
       modifiedTable[this.state.modifiedId].longUrl = this.state.longUrl;
-    }
 
-    let data = 
-    {
+    let data = {
       index: this.state.modifiedId,
       link: modifiedTable[this.state.modifiedId],
       token: this.props.token
     };
 
     axios.put(http_config.BASE, data, {
-      headers:
-      {
+      headers:{
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
-    }).then(response =>
-      {
+    }).then(response =>{
         this.props.dispatch({
           type: LINK_CHANGED,
           payload: modifiedTable
@@ -180,6 +178,30 @@ class PanelStub extends React.Component
     this.setState({[name]: value});
   }
 
+  handleChangePassword(e)
+  {
+    e.preventDefault();
+
+    if(this.state.newPassword === this.state.newPasswordRepeat)
+    {
+      let data = qs.stringify({
+        action: 'changeUserPassword',
+        token: this.props.token,
+        newPassword: this.state.newPassword
+      })
+      axios.post(http_config.BASE,data,{
+        headers:{
+          'Content-Type' : 'application/x-www-form-urlencoded'
+        }
+      });
+    }
+
+
+    this.setState({
+      modifiedField: undefined
+    });
+  }
+
   render()
   {
     return (
@@ -196,7 +218,20 @@ class PanelStub extends React.Component
             <label>example@example.com</label><br/>
             <button>Change</button>
           </div>
-          <button>Reset password</button>
+          {this.state.modifiedField !== 'password' && 
+          <button onClick={() => this.setState({modifiedField : 'password'})}>Reset password</button>
+          }
+          {this.state.modifiedField === 'password' &&
+            <form onSubmit={(e) => this.handleChangePassword(e)}>
+              <label>Old Passowrd</label><br/>
+              <input name="oldPassword" type="password" onChange={(e) => this.handleInputChange(e)}/><br/>
+              <label>New Passowrd</label><br/>
+              <input name="newPassword" type="password" onChange={(e) => this.handleInputChange(e)}/><br/>
+              <label>Repeat New Passowrd</label><br/>
+              <input name="newPasswordRepeat" type="password" onChange={(e) => this.handleInputChange(e)}/><br/>
+              <button type="submit">Submit</button>
+            </form>
+          }
         </div>
         <div className="account-links">
           <h4>Your Links</h4>
@@ -240,42 +275,13 @@ class PanelStub extends React.Component
       </main>
     );
   }
-
-   TableRow(linksTable) {
-     if(linksTable !== undefined)
-     {
-      let arr = [];
-      for(let i = 0;i < linksTable.length;i++)
-      {
-        arr.push(
-        <tr key={i}>
-      
-          <td>{ linksTable[i].shortUrl}</td>
-          <td>{ linksTable[i].longUrl}</td>
-          <td>
-            <button onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
-            {
-             linksTable[i].password !== undefined && 
-            <button onClick={() => this.handleRemovePassword(i)}>Remove password</button>
-            }
-            {
-             linksTable[i].password === undefined && 
-            <button onClick={() => this.handleSetPassword(i)}>Set password</button>
-            }
-            <button onClick={() => this.handleDelete(i)}>Delete</button>
-          </td>
-        </tr>
-        );
-      }
-      return arr;
-    }
-  }
 }
 
-const mapStateToProps = ({links}) => {
+const mapStateToProps = ({token,links}) => {
   return {
     modifiedRecord: links.modifiedRecord,
-    linksTable: links.linksTable
+    linksTable: links.linksTable,
+    token: token.token
   };
 };
 
