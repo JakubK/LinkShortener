@@ -89,7 +89,8 @@ class PanelStub extends React.Component
   handleCopy(i)
   {
     const el = document.createElement('textarea');
-    el.value = this.props.linksTable[i].shortLink;
+    let url = window.location;
+    el.value = url.protocol + "//" + url.host + "/" + this.props.linksTable[i].shortLink;
     el.setAttribute('readonly', '');
     el.style.position = 'absolute';
     el.style.left = '-9999px';
