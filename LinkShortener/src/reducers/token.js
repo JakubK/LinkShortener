@@ -5,7 +5,7 @@ const token = (state = {}, action) =>
   switch (action.type) {
     case TOKEN_ACQUIRED:
         return Object.assign({}, state, {
-            token: action.payload.token,
+            token: action.payload,
         }); 
     case TOKEN_FORGOT:
         return Object.assign({}, state, {

@@ -55,10 +55,9 @@ class SignInStub extends React.Component
           this.props.dispatch(
             {
               type: TOKEN_ACQUIRED,
-              payload: response.data.split(':')[1].trim()
+              payload: response.data
             }
           );
-          console.log(response.data);
           this.props.history.push('/panel');
         }
       });  

@@ -2,6 +2,7 @@ import React from 'react'
 import './passwordField.css'
 import { connect } from 'react-redux';
 import axios from 'axios'
+import qs from 'qs'
 import {http_config} from '../../http/http_config'
 import {PASSWORD_FINISH_SET, PASSWORD_NOT_SET} from '../../actions/actions'
 
@@ -32,14 +33,13 @@ class PasswordFieldStub extends React.Component
     let modifiedTable = [...this.props.linksTable];
     modifiedTable[this.props.modifiedRecord].password = this.state.password;
    
-    let data =
-    {
+    let data = qs.stringify({
       action: 'modifyPassword',
       token: this.props.token,
       shortLink: modifiedTable[this.props.modifiedRecord].shortLink,
       newPassword: this.state.password
-    }
-    axios.put(http_config.BASE, data, {
+    });
+    axios.post(http_config.BASE, data, {
       headers:
       {
         'Content-Type' : 'application/x-www-form-urlencoded'
@@ -80,10 +80,11 @@ class PasswordFieldStub extends React.Component
   }
 }
 
-const mapStateToProps = ({links}) => {
+const mapStateToProps = ({links, token}) => {
   return {
     modifiedRecord: links.modifiedRecord,
-    linksTable: links.linksTable
+    linksTable: links.linksTable,
+    token: token.token
   };
 };
 

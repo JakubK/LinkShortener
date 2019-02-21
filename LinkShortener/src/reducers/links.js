@@ -2,7 +2,7 @@ import {LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_FINISH_SET, PASSW
 
 const links = (state = {linksTable: []} , action) => {
   switch (action.type) {
-      case LINKS_LOADED:
+    case LINKS_LOADED:
           return Object.assign({}, state, {
             linksTable: [...action.payload],
           }); 

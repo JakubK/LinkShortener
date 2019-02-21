@@ -1,7 +1,7 @@
 import React from 'react'
 import './panel.css'
 import PasswordField from './passwordField'
-import {LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_REMOVED, LINK_CHANGED } from '../../actions/actions'
+import {TOKEN_FORGOT, LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_REMOVED, LINK_CHANGED } from '../../actions/actions'
 
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -16,12 +16,17 @@ class PanelStub extends React.Component
     this.state ={
       modifiedField: '',
       modifiedId: '',
+
       newEmail: '',
+
       oldPassword: '',
       newPassword: '',
       newPasswordRepeat: '',
-      longUrl: '',
-      shortUrl: ''
+
+      longLink: '',
+      shortLink: '',
+
+      oldShortLink: ''
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -30,7 +35,7 @@ class PanelStub extends React.Component
   componentDidMount()
   {
     //Fetch Links array
-    let data = JSON.stringify({
+    let data = qs.stringify({
       action: 'getUserLinks',
       token: this.props.token
     });
@@ -57,13 +62,12 @@ class PanelStub extends React.Component
 
   handleDelete(i)
   {
-    let data = {
+    let data = qs.stringify({
       action: 'deleteShortlink',
-      linkToRemove: this.props.linksTable[i].shortLink,
+      shortLink: this.props.linksTable[i].shortLink,
       token: this.props.token
-    }
-
-    axios.delete(http_config.BASE, data, {
+    });
+    axios.post(http_config.BASE, data, {
       headers:
       {
         'Content-Type' : 'application/x-www-form-urlencoded'
@@ -85,7 +89,7 @@ class PanelStub extends React.Component
   handleCopy(i)
   {
     const el = document.createElement('textarea');
-    el.value = this.props.linksTable[i].shortUrl;
+    el.value = this.props.linksTable[i].shortLink;
     el.setAttribute('readonly', '');
     el.style.position = 'absolute';
     el.style.left = '-9999px';
@@ -100,7 +104,7 @@ class PanelStub extends React.Component
     if(e.target.type !== 'submit')
     {
       this.setState({
-        modifiedField: "longUrl",
+        modifiedField: "longLink",
         modifiedId: i
       });
     }
@@ -111,8 +115,9 @@ class PanelStub extends React.Component
     if(e.target.type !== 'submit')
     {
       this.setState({
-        modifiedField: "shortUrl",
-        modifiedId: i
+        modifiedField: "shortLink",
+        modifiedId: i,
+        oldShortLink: this.props.linksTable[i].shortLink
       });
     }
   }
@@ -120,30 +125,32 @@ class PanelStub extends React.Component
   handleLinkRenameSubmit(e)
   {
     e.preventDefault();
+
     let modifiedTable = [...this.props.linksTable];
     let data;
-    if(this.state.modifiedField === 'shortUrl')
+
+
+    if(this.state.modifiedField === 'shortLink')
     {
-      modifiedTable[this.state.modifiedId].shortUrl = this.state.shortUrl;
+      modifiedTable[this.state.modifiedId].shortLink = this.state.shortLink;
       data = {
         action: 'modifyShortlink',
         token: this.props.token,
-        shortLink: modifiedTable[this.state.modifiedId].shortLink,
-        newShortLink: this.state.shortUrl
+        shortLink: this.state.oldShortLink,
+        newShortLink: this.state.shortLink
       }
     }
     else
     {
-      modifiedTable[this.state.modifiedId].longUrl = this.state.longUrl;
+      modifiedTable[this.state.modifiedId].longLink = this.state.longLink;
       data = {
         action: 'modifyLonglink',
         token: this.props.token,
-        shortLink: modifiedTable[this.state.modifiedId].longLink,
-        newShortLink: this.state.longUrl
+        shortLink: modifiedTable[this.state.modifiedId].shortLink,
+        newLongLink: this.state.longLink
       }
     }
-
-    axios.put(http_config.BASE, data, {
+    axios.post(http_config.BASE, qs.stringify(data), {
       headers:{
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
@@ -173,10 +180,16 @@ class PanelStub extends React.Component
   handleRemovePassword(i)
   {
     let modifiedTable = [...this.props.linksTable];
-    modifiedTable[i].password = undefined;
+    modifiedTable[i].password = '';
 
-    let data = modifiedTable[i];
-    axios.put(http_config.BASE, data, {
+    let data = qs.stringify({
+      action: 'modifyPassword',
+      token: this.props.token,
+      shortLink: modifiedTable[i].shortLink,
+      newPassword: ''
+    });
+
+    axios.post(http_config.BASE, data, {
       headers:
       {
         'Content-Type' : 'application/x-www-form-urlencoded'
@@ -235,7 +248,18 @@ class PanelStub extends React.Component
       headers:{
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
-    });
+    }).then(response => 
+      {
+        if(response.status === 200)
+        {
+          this.props.dispatch({
+            type: TOKEN_FORGOT
+          }).then(() =>
+          {
+            this.props.history.push("/sign/in")
+          });
+        }
+      });
 
     this.setState({
       modifiedField: undefined
@@ -294,23 +318,25 @@ class PanelStub extends React.Component
               <tr key={i}>
                 <td onClick={(e) => this.handleShortLinkRename(e,i)}>
 
-                  { (this.state.modifiedId !== i || this.state.modifiedField !== 'shortUrl') && element.shortUrl}
-                  { (this.state.modifiedId === i && this.state.modifiedField === 'shortUrl') && <div><input name="shortUrl" onChange={(e) => this.handleInputChange(e)} type="text"/><button onClick={(e) => this.handleLinkRenameSubmit(e)}>Submit</button></div>}
+                  { (this.state.modifiedId !== i || this.state.modifiedField !== 'shortLink') &&
+                  
+                   element.shortLink}
+                  { (this.state.modifiedId === i && this.state.modifiedField === 'shortLink') && <div><input name="shortLink" onChange={(e) => this.handleInputChange(e)} type="text"/><button onClick={(e) => this.handleLinkRenameSubmit(e)}>Submit</button></div>}
 
                 </td>
                 <td onClick={(e) => this.handleLongLinkRename(e,i)}>
                 
-                  { (this.state.modifiedId !== i || this.state.modifiedField !== 'longUrl') && element.longUrl}
-                  { (this.state.modifiedId === i && this.state.modifiedField === 'longUrl') && <div><input name="longUrl" onChange={(e) => this.handleInputChange(e)} type="text"/><button onClick={(e) => this.handleLinkRenameSubmit(e)}>Submit</button></div>}                
+                  { (this.state.modifiedId !== i || this.state.modifiedField !== 'longLink') && element.longLink}
+                  { (this.state.modifiedId === i && this.state.modifiedField === 'longLink') && <div><input name="longLink" onChange={(e) => this.handleInputChange(e)} type="text"/><button onClick={(e) => this.handleLinkRenameSubmit(e)}>Submit</button></div>}                
                 </td>
                 <td>
                   <button onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
                   {
-                    element.password !== undefined && 
+                    element.password !== '' && 
                     <button onClick={() => this.handleRemovePassword(i)}>Remove password</button>
                   }
                   {
-                    element.password === undefined && 
+                    element.password === '' && 
                     <button onClick={() => this.handleSetPassword(i)}>Set password</button>
                   }
                   <button onClick={() => this.handleDelete(i)}>Delete</button>
