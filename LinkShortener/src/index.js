@@ -19,11 +19,18 @@ import reducers from './reducers'
 
 
 let token = localStorage.getItem('token');
-const store = createStore(reducers, {token: token});
+const store = createStore(reducers, 
+  {
+    token:
+    {
+      token: token
+    } 
+  }
+);
 
 store.subscribe(() =>
 {
-  localStorage.setItem('token', store.getState().token);
+  localStorage.setItem('token', store.getState().token.token);
 });
 
 const routing = (
