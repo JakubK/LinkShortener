@@ -22,9 +22,12 @@ class NavbarStub extends React.Component
         
         <Link to="/sign/in" className="nav-button">Sign in / up</Link>
         }
+        {
+          this.props.token &&
+          <Link to="/panel" className="nav-button">Account</Link>
+        }
         {this.props.token && 
-        
-        <button onClick={() => this.handleLogout()} className="nav-button">Log out</button>
+          <button onClick={() => this.handleLogout()} className="nav-button">Log out</button>
         }
       </div>
     </nav>
@@ -38,7 +41,7 @@ class NavbarStub extends React.Component
       token: this.props.token
     });
 
-    axios.put(http_config.BASE,data, {
+    axios.post(http_config.BASE,data, {
       headers:{
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
