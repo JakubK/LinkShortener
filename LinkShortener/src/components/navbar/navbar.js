@@ -34,7 +34,7 @@ class NavbarStub extends React.Component
   handleLogout()
   {
     let data = qs.stringify({
-      action: 'loginUserOut',
+      action: 'logUserOut',
       token: this.props.token
     });
 

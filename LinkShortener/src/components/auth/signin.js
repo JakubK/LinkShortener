@@ -37,7 +37,7 @@ class SignInStub extends React.Component
   {
     //validation required
     let data = qs.stringify({
-      action: 'loginUserIn',
+      action: 'logUserIn',
       email: this.state.emailAddress,
       password: this.state.password
     });

@@ -11,10 +11,11 @@ class HomeStub extends React.Component
   {
     super();
 
-    this.setState({
+    this.state = {
       longLink: '',
-      linkPassword: ''
-    })
+      linkPassword: '',
+      shortLink: ''
+    };
 
     this.handleInputChange = this.handleInputChange.bind(this);
   }
@@ -38,7 +39,7 @@ class HomeStub extends React.Component
     else
     {
       let data = JSON.stringify({
-        action: 'anonCreateLink',
+        action: 'createShortlink',
         longLink: this.state.longLink,
         linkPassword: this.state.linkPassword
       });
@@ -53,6 +54,9 @@ class HomeStub extends React.Component
           if(response.status === 201)
           {
             //display token from response.data
+            this.setState({
+              shortLink: response.data.shortLink
+            });
           }
         });  
     }
@@ -69,7 +73,7 @@ class HomeStub extends React.Component
 
         <svg className="output-arrow" aria-hidden="true" data-prefix="fas" data-icon="arrow-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M413.1 222.5l22.2 22.2c9.4 9.4 9.4 24.6 0 33.9L241 473c-9.4 9.4-24.6 9.4-33.9 0L12.7 278.6c-9.4-9.4-9.4-24.6 0-33.9l22.2-22.2c9.5-9.5 25-9.3 34.3.4L184 343.4V56c0-13.3 10.7-24 24-24h32c13.3 0 24 10.7 24 24v287.4l114.8-120.5c9.3-9.8 24.8-10 34.3-.4z"></path></svg>
 
-        <p className="output-link">samplelink:8080/Axasdasd</p>
+        <p className="output-link">{ this.state.shortLink  }</p>
       </div>
     </main>
     )

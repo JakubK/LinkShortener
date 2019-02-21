@@ -32,7 +32,13 @@ class PasswordFieldStub extends React.Component
     let modifiedTable = [...this.props.linksTable];
     modifiedTable[this.props.modifiedRecord].password = this.state.password;
    
-    let data = modifiedTable[this.props.modifiedRecord];
+    let data =
+    {
+      action: 'modifyPassword',
+      token: this.props.token,
+      shortLink: modifiedTable[this.props.modifiedRecord].shortLink,
+      newPassword: this.state.password
+    }
     axios.put(http_config.BASE, data, {
       headers:
       {

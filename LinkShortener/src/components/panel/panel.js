@@ -19,7 +19,9 @@ class PanelStub extends React.Component
       newEmail: '',
       oldPassword: '',
       newPassword: '',
-      newPasswordRepeat: ''
+      newPasswordRepeat: '',
+      longUrl: '',
+      shortUrl: ''
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -56,7 +58,8 @@ class PanelStub extends React.Component
   handleDelete(i)
   {
     let data = {
-      linkToRemove: this.props.linksTable[i],
+      action: 'deleteShortlink',
+      linkToRemove: this.props.linksTable[i].shortLink,
       token: this.props.token
     }
 
@@ -67,12 +70,15 @@ class PanelStub extends React.Component
       }
     }).then(response =>
       {
-        this.props.dispatch(
-          {
-            type: LINK_REMOVED,
-            payload: i
-          }
-        );
+        if(response.status === 200)
+        {
+          this.props.dispatch(
+            {
+              type: LINK_REMOVED,
+              payload: i
+            }
+          );
+        }
       }); 
   }
 
@@ -115,27 +121,41 @@ class PanelStub extends React.Component
   {
     e.preventDefault();
     let modifiedTable = [...this.props.linksTable];
+    let data;
     if(this.state.modifiedField === 'shortUrl')
+    {
       modifiedTable[this.state.modifiedId].shortUrl = this.state.shortUrl;
+      data = {
+        action: 'modifyShortlink',
+        token: this.props.token,
+        shortLink: modifiedTable[this.state.modifiedId].shortLink,
+        newShortLink: this.state.shortUrl
+      }
+    }
     else
+    {
       modifiedTable[this.state.modifiedId].longUrl = this.state.longUrl;
-
-    let data = {
-      index: this.state.modifiedId,
-      link: modifiedTable[this.state.modifiedId],
-      token: this.props.token
-    };
+      data = {
+        action: 'modifyLonglink',
+        token: this.props.token,
+        shortLink: modifiedTable[this.state.modifiedId].longLink,
+        newShortLink: this.state.longUrl
+      }
+    }
 
     axios.put(http_config.BASE, data, {
       headers:{
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
     }).then(response =>{
-        this.props.dispatch({
-          type: LINK_CHANGED,
-          payload: modifiedTable
-        });
-    
+
+        if(response.status === 200)
+        {
+          this.props.dispatch({
+            type: LINK_CHANGED,
+            payload: modifiedTable
+          });
+        }
         this.setState({
           modifiedId: undefined
         });
