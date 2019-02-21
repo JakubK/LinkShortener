@@ -2,17 +2,27 @@ class UsersInterface:
     def create_user(self, email, password):
         pass
 
-    def delete_user(self, email, password):
+    def delete_user(self, token):
         pass
 
-    def change_user_password(self, email, old_password, new_password):
+    def change_user_password(self, token, new_password):
         pass
 
-    def change_user_email(self, old_email, new_email, password):
+    def log_user_in(self, email, password):
         pass
 
-    def get_user_shotlinks_table(self, email, password):
+    def log_user_out(self, token):
         pass
 
-    # def validate_user(self, email, password):
-    #     pass
+    def extend_token(self, token):
+        pass
+
+    def expire_token(self, token):
+        pass
+
+    def get_user_for_token(self, token):
+        pass
+
+    @staticmethod
+    def generate_token_for_user():
+        pass
