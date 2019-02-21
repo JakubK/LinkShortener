@@ -50,8 +50,9 @@ class ProtectedLink extends React.Component
     let data = qs.stringify({
       action: 'translate',
       shortLink: this.props.match.params.hash,
-      password: this.state.password
+      linkPassword: this.state.password
     });
+
     axios.post(http_config.BASE,data, {
       headers:
       {
