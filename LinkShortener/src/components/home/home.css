@@ -27,6 +27,7 @@
   height: 70px;
   width: 100%;
   font-size: 30px;
+  display: block;
 }
 
 .home-input:focus
@@ -70,4 +71,33 @@
   margin-top: 50px;
 
   font-size: 1em;
+}
+
+.shortlink-frame
+{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.shortlink-frame .home-input
+{
+  margin: 0;
+  width: 70%;
+}
+
+.shortlink-base
+{
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.output-group
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
