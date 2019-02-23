@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import axios from 'axios'
 import qs from 'qs'
 import {http_config} from '../../http/http_config'
-import {PASSWORD_FINISH_SET, PASSWORD_NOT_SET} from '../../actions/actions'
+import {PASSWORD_FINISH_SET, PASSWORD_NOT_SET,TOKEN_FORGOT} from '../../actions/actions'
 
 class PasswordFieldStub extends React.Component
 {
@@ -50,7 +50,14 @@ class PasswordFieldStub extends React.Component
           type: PASSWORD_FINISH_SET,
           payload: modifiedTable
         });
-      }); 
+      }).catch(() =>{
+        this.props.history.push('/sign/in');
+        this.props.dispatch(
+          {
+            type: TOKEN_FORGOT
+          }
+        );
+      });  
   }
 
   handleClose()
@@ -72,7 +79,7 @@ class PasswordFieldStub extends React.Component
             <h4>Set a Password for your link</h4>
             <input name="password" onChange={this.handleInputChange} type="password"/>
             <br/>
-            <button onClick={() => this.handleSubmit()}>Submit</button>
+            <button className="btn-continue" onClick={() => this.handleSubmit()}>Submit</button>
           </div>
         </div>
       </div>

@@ -41,7 +41,6 @@ class HomeStub extends React.Component
       shortLink: this.state.preShortLink,
       token: this.props.token
     });
-    console.log(data);
     axios.post(http_config.BASE, data, {
       headers:
       {

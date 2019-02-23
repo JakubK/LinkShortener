@@ -46,9 +46,7 @@ class PanelStub extends React.Component
       }
     }).then(response =>
       {
-        //if API returned a token, then store it and redirect the user to the panel 
-        if(response.status === 200)
-        {
+        if(response.status === 200){
           this.props.dispatch(
             {
               type: LINKS_LOADED,
@@ -57,6 +55,13 @@ class PanelStub extends React.Component
           );
           this.props.history.push('/panel');
         }
+      }).catch(() =>{
+        this.props.history.push('/sign/in');
+        this.props.dispatch(
+          {
+            type: TOKEN_FORGOT
+          }
+        );
       });  
   }
 
@@ -83,7 +88,14 @@ class PanelStub extends React.Component
             }
           );
         }
-      }); 
+      }).catch(() =>{
+        this.props.history.push('/sign/in');
+        this.props.dispatch(
+          {
+            type: TOKEN_FORGOT
+          }
+        );
+      });   
   }
 
   handleCopy(i)
@@ -130,7 +142,6 @@ class PanelStub extends React.Component
     let modifiedTable = [...this.props.linksTable];
     let data;
 
-
     if(this.state.modifiedField === 'shortLink')
     {
       modifiedTable[this.state.modifiedId].shortLink = this.state.shortLink;
@@ -156,9 +167,7 @@ class PanelStub extends React.Component
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
     }).then(response =>{
-
-        if(response.status === 200)
-        {
+        if(response.status === 200){
           this.props.dispatch({
             type: LINK_CHANGED,
             payload: modifiedTable
@@ -167,19 +176,24 @@ class PanelStub extends React.Component
         this.setState({
           modifiedId: undefined
         });
-      }); 
+      }).catch(() =>{
+        this.props.history.push('/sign/in');
+        this.props.dispatch(
+          {
+            type: TOKEN_FORGOT
+          }
+        );
+      });   
   }
 
-  handleSetPassword(i)
-  {
+  handleSetPassword(i){
     this.props.dispatch({
       type: PASSWORD_INIT_SET,
       payload: i
     });
   }
 
-  handleRemovePassword(i)
-  {
+  handleRemovePassword(i){
     let modifiedTable = [...this.props.linksTable];
     modifiedTable[i].password = '';
 
@@ -195,13 +209,20 @@ class PanelStub extends React.Component
       {
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
-    }).then(response =>
+    }).then(() =>
       {
         this.props.dispatch({
           type: PASSWORD_REMOVED,
           payload: modifiedTable
         });
-      }); 
+      }).catch(() =>{
+        this.props.history.push('/sign/in');
+        this.props.dispatch(
+          {
+            type: TOKEN_FORGOT
+          }
+        );
+      });   
   }
 
   handleInputChange(event)
@@ -227,7 +248,14 @@ class PanelStub extends React.Component
         headers:{
           'Content-Type' : 'application/x-www-form-urlencoded'
         }
-      });
+      }).catch(() =>{
+        this.props.history.push('/sign/in');
+        this.props.dispatch(
+          {
+            type: TOKEN_FORGOT
+          }
+        );
+      });  
     }
 
     this.setState({
@@ -251,8 +279,7 @@ class PanelStub extends React.Component
       }
     }).then(response => 
       {
-        if(response.status === 200)
-        {
+        if(response.status === 200){
           this.props.dispatch({
             type: TOKEN_FORGOT
           }).then(() =>
@@ -260,7 +287,14 @@ class PanelStub extends React.Component
             this.props.history.push("/sign/in")
           });
         }
-      });
+      }).catch(() =>{
+        this.props.history.push('/sign/in');
+        this.props.dispatch(
+          {
+            type: TOKEN_FORGOT
+          }
+        );
+      });  
 
     this.setState({
       modifiedField: undefined
@@ -271,7 +305,7 @@ class PanelStub extends React.Component
   {
     return (
       <main className="panel-container">
-       {
+        {
           this.props.modifiedRecord !== undefined &&
          <PasswordField/>
         }

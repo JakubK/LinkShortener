@@ -11,6 +11,7 @@ import {TOKEN_FORGOT} from '../../actions/actions'
 
 class NavbarStub extends React.Component
 {
+
   render()
   {
     return (
@@ -18,16 +19,15 @@ class NavbarStub extends React.Component
       <Link className="nav-brand" to="/">LinkShortener</Link>
       <div className="navbar-buttons">
         <Link to="/about" className="nav-button">About</Link>
-        {!this.props.token && 
-        
+        {(!this.props.token || this.props.token === 'undefined') &&      
         <Link to="/sign/in" className="nav-button">Sign in / up</Link>
         }
         {
-          this.props.token &&
+          (this.props.token && this.props.token !== 'undefined') &&
           <Link to="/panel" className="nav-button">Account</Link>
         }
-        {this.props.token && 
-          <button onClick={() => this.handleLogout()} className="nav-button">Log out</button>
+        { (this.props.token && this.props.token !== 'undefined') && 
+          <Link to="/sign/in" onClick={() => this.handleLogout()} className="nav-button">Log out</Link>
         }
       </div>
     </nav>
@@ -45,12 +45,11 @@ class NavbarStub extends React.Component
       headers:{
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
-    }).then(response =>
-      {
-        this.props.dispatch({
-          type: TOKEN_FORGOT
-        });
-      })
+    })
+
+    this.props.dispatch({
+      type: TOKEN_FORGOT
+    });
   }
 }
 
