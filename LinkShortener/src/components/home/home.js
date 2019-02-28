@@ -2,9 +2,8 @@
 import React from 'react'
 import './home.css'
 import { connect } from 'react-redux'
-import axios from 'axios'
-import qs from 'qs'
-import {http_config} from '../../http/http_config'
+import {withRouter} from 'react-router'
+import { http_client } from '../../http/http_client'
 
 class HomeStub extends React.Component
 {
@@ -34,19 +33,15 @@ class HomeStub extends React.Component
   {
     event.preventDefault();
 
-    let data = qs.stringify({
+    let data = {
       action: 'createShortlink',
       longLink: this.state.longLink,
       linkPassword: this.state.linkPassword,
       shortLink: this.state.preShortLink,
       token: this.props.token
-    });
-    axios.post(http_config.BASE, data, {
-      headers:
-      {
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response =>
+    };
+
+    http_client.post(data, this.props).then(response =>
       {
         //if API returned a token, then store it and redirect the user to the panel 
         if(response.status === 201)
@@ -110,4 +105,4 @@ const mapStateToProps = ({token}) => {
 
 const Home = connect(mapStateToProps)(HomeStub);
 
-export default Home;
+export default withRouter(Home);

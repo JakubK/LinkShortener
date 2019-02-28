@@ -1,9 +1,8 @@
 import React from 'react'
 import './sign.css'
 import { NavLink } from 'react-router-dom'
-import axios from 'axios'
-import qs from 'qs'
-import {http_config} from '../../http/http_config'
+import {withRouter} from 'react-router'
+import { http_client } from '../../http/http_client';
 
 class SignUp extends React.Component
 {
@@ -32,17 +31,12 @@ class SignUp extends React.Component
 
   async handleSubmit()
   {    
-    let data = qs.stringify({
+    let data = {
       action: 'createUser',
       email: this.state.emailAddress,
       password: this.state.password
-    });
-    await axios.post(http_config.BASE, data, {
-      headers:
-      {
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response =>
+    };
+    await http_client.post(data, this.props).then(response =>
       {
         //if API created an account then redirect to /login
         
@@ -82,4 +76,4 @@ class SignUp extends React.Component
   }
 }
 
-export default SignUp;
+export default withRouter(SignUp);

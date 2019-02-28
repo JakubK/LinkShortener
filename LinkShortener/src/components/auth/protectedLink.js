@@ -1,39 +1,26 @@
 import React from 'react'
-import axios from 'axios'
-import qs from 'qs'
-import {http_config} from '../../http/http_config'
+import {withRouter} from 'react-router'
+import { http_client } from '../../http/http_client';
 class ProtectedLink extends React.Component
 {
   componentDidMount()
   {
     //try to hit the server with translation call 
-    let data = qs.stringify({
+    let data = {
       action: 'translate',
       shortLink: this.props.match.params.hash,
       password: ''
-    });
-    axios.post(http_config.BASE,data, {
-      headers:
+    };
+    http_client.post(data,this.props).then(response => 
       {
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response => 
-      {
-        if(response.status === 200)
+        if(response)
         {
-          document.location.href = response.data;
+          if(response.status === 200)
+          {
+            document.location.href = response.data;
+          }
         }
-      }).catch(response => 
-        {
-          if(response.status === 401)
-          {
-            //wrong password
-          }
-          else if(response.status === 404)
-          {
-            this.props.history.go('/');
-          }
-        })
+      });
   }
 
   handleInputChange(event)
@@ -47,30 +34,22 @@ class ProtectedLink extends React.Component
 
   async handleSubmit()
   {
-    let data = qs.stringify({
+    let data = {
       action: 'translate',
       shortLink: this.props.match.params.hash,
       linkPassword: this.state.password
-    });
+    };
 
-    axios.post(http_config.BASE,data, {
-      headers:
+    http_client.post(data, this.props).then(response => 
       {
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response => 
-      {
-        if(response.status === 200)
+        if(response)
         {
-          document.location.href = response.data;
-        }
-      }).catch(response => 
-        {
-          if(response.status === 401)
+          if(response.status === 200)
           {
-            //wrong password
+            document.location.href = response.data;
           }
-      })
+        }
+      });
   }
 
   constructor()
@@ -110,4 +89,4 @@ class ProtectedLink extends React.Component
   }
 }
 
-export default ProtectedLink;
+export default withRouter(ProtectedLink);

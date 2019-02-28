@@ -1,11 +1,10 @@
 import React from 'react'
 import './sign.css'
 import { NavLink } from 'react-router-dom'
-import axios from 'axios'
-import qs from 'qs'
+import {withRouter} from 'react-router'
 import {TOKEN_ACQUIRED} from '../../actions/actions'
-import {http_config} from '../../http/http_config'
 import { connect } from 'react-redux';
+import { http_client } from '../../http/http_client';
 
 
 class SignInStub extends React.Component
@@ -36,29 +35,27 @@ class SignInStub extends React.Component
   async handleSubmit()
   {
     //validation required
-    let data = qs.stringify({
+    let data = {
       action: 'logUserIn',
       email: this.state.emailAddress,
       password: this.state.password
-    });
+    };
 
-    await axios.post(http_config.BASE, data, {
-      headers:
-      {
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response =>
+     http_client.post(data, this.props).then(response =>
       {
         //if API returned a token, then store it and redirect the user to the panel 
-        if(response.status === 200)
+        if(response)
         {
-          this.props.dispatch(
-            {
-              type: TOKEN_ACQUIRED,
-              payload: response.data
-            }
-          );
-          this.props.history.push('/panel');
+          if(response.status === 200)
+          {
+            this.props.dispatch(
+              {
+                type: TOKEN_ACQUIRED,
+                payload: response.data
+              }
+            );
+            this.props.history.push('/panel');
+          }
         }
       });  
   }
@@ -100,4 +97,4 @@ const mapStateToProps = ({token}) => {
 const SignIn = connect(mapStateToProps)(SignInStub);
 
 
-export default SignIn;
+export default withRouter(SignIn);

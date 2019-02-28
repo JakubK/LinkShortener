@@ -2,11 +2,11 @@
 import React from 'react'
 import './navbar.css'
 import { connect } from 'react-redux'
-import axios from 'axios'
-import qs from 'qs'
+import { withRouter } from 'react-router'
+
+import {http_client} from '../../http/http_client'
 
 import {Link} from 'react-router-dom'
-import { http_config } from '../../http/http_config'
 import {TOKEN_FORGOT} from '../../actions/actions'
 
 class NavbarStub extends React.Component
@@ -27,7 +27,7 @@ class NavbarStub extends React.Component
           <Link to="/panel" className="nav-button">Account</Link>
         }
         { (this.props.token && this.props.token !== 'undefined') && 
-          <Link to="/sign/in" onClick={() => this.handleLogout()} className="nav-button">Log out</Link>
+          <button onClick={() => this.handleLogout()} className="nav-button">Log out</button>
         }
       </div>
     </nav>
@@ -36,19 +36,18 @@ class NavbarStub extends React.Component
 
   handleLogout()
   {
-    let data = qs.stringify({
+    let data = {
       action: 'logUserOut',
       token: this.props.token
-    });
+    };
 
-    axios.post(http_config.BASE,data, {
-      headers:{
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    })
+    http_client.post(data, this.props).then(() => 
+    {
+      this.props.dispatch({
+        type: TOKEN_FORGOT
+      });
 
-    this.props.dispatch({
-      type: TOKEN_FORGOT
+      this.props.history.push('/sign/in');
     });
   }
 }
@@ -61,4 +60,4 @@ const mapStateToProps = ({token}) => {
 
 const Navbar = connect(mapStateToProps)(NavbarStub);
 
-export default Navbar;
+export default withRouter(Navbar);

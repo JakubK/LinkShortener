@@ -1,10 +1,10 @@
 import React from 'react'
 import './passwordField.css'
 import { connect } from 'react-redux';
-import axios from 'axios'
-import qs from 'qs'
-import {http_config} from '../../http/http_config'
-import {PASSWORD_FINISH_SET, PASSWORD_NOT_SET,TOKEN_FORGOT} from '../../actions/actions'
+import {PASSWORD_FINISH_SET, PASSWORD_NOT_SET} from '../../actions/actions'
+import { http_client } from '../../http/http_client'
+import {withRouter} from 'react-router'
+
 
 class PasswordFieldStub extends React.Component
 {
@@ -33,31 +33,20 @@ class PasswordFieldStub extends React.Component
     let modifiedTable = [...this.props.linksTable];
     modifiedTable[this.props.modifiedRecord].password = this.state.password;
    
-    let data = qs.stringify({
+    let data = {
       action: 'modifyPassword',
       token: this.props.token,
       shortLink: modifiedTable[this.props.modifiedRecord].shortLink,
       newPassword: this.state.password
-    });
-    axios.post(http_config.BASE, data, {
-      headers:
-      {
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response =>
+    };
+
+    http_client.post(data,this.props).then(() =>
       {
         this.props.dispatch({
           type: PASSWORD_FINISH_SET,
           payload: modifiedTable
         });
-      }).catch(() =>{
-        this.props.history.push('/sign/in');
-        this.props.dispatch(
-          {
-            type: TOKEN_FORGOT
-          }
-        );
-      });  
+      });
   }
 
   handleClose()
@@ -97,4 +86,4 @@ const mapStateToProps = ({links, token}) => {
 
 const PasswordField = connect(mapStateToProps)(PasswordFieldStub);
 
-export default PasswordField;
+export default withRouter(PasswordField);

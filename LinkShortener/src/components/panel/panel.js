@@ -4,9 +4,9 @@ import PasswordField from './passwordField'
 import {TOKEN_FORGOT, LINKS_LOADED,LINK_REMOVED, PASSWORD_INIT_SET, PASSWORD_REMOVED, LINK_CHANGED } from '../../actions/actions'
 
 import { connect } from 'react-redux'
-import axios from 'axios'
-import qs from 'qs'
-import {http_config} from '../../http/http_config'
+import { http_client } from '../../http/http_client'
+
+import {withRouter} from 'react-router'
 
 class PanelStub extends React.Component
 {
@@ -35,16 +35,13 @@ class PanelStub extends React.Component
   componentDidMount()
   {
     //Fetch Links array
-    let data = qs.stringify({
+    let data = {
       action: 'getUserLinks',
       token: this.props.token
-    });
-    axios.post(http_config.BASE, data, {
-      headers:
-      {
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response =>
+    };
+
+    http_client.post(data, this.props)
+      .then(response =>
       {
         if(response.status === 200){
           this.props.dispatch(
@@ -55,29 +52,17 @@ class PanelStub extends React.Component
           );
           this.props.history.push('/panel');
         }
-      }).catch(() =>{
-        this.props.history.push('/sign/in');
-        this.props.dispatch(
-          {
-            type: TOKEN_FORGOT
-          }
-        );
-      });  
+      });
   }
 
   handleDelete(i)
   {
-    let data = qs.stringify({
+    let data = {
       action: 'deleteShortlink',
       shortLink: this.props.linksTable[i].shortLink,
       token: this.props.token
-    });
-    axios.post(http_config.BASE, data, {
-      headers:
-      {
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response =>
+    };
+    http_client.post(data,this.props).then(response =>
       {
         if(response.status === 200)
         {
@@ -88,14 +73,7 @@ class PanelStub extends React.Component
             }
           );
         }
-      }).catch(() =>{
-        this.props.history.push('/sign/in');
-        this.props.dispatch(
-          {
-            type: TOKEN_FORGOT
-          }
-        );
-      });   
+      });
   }
 
   handleCopy(i)
@@ -162,11 +140,7 @@ class PanelStub extends React.Component
         newLongLink: this.state.longLink
       }
     }
-    axios.post(http_config.BASE, qs.stringify(data), {
-      headers:{
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response =>{
+    http_client.post(data, this.props).then(response =>{
         if(response.status === 200){
           this.props.dispatch({
             type: LINK_CHANGED,
@@ -176,14 +150,7 @@ class PanelStub extends React.Component
         this.setState({
           modifiedId: undefined
         });
-      }).catch(() =>{
-        this.props.history.push('/sign/in');
-        this.props.dispatch(
-          {
-            type: TOKEN_FORGOT
-          }
-        );
-      });   
+      }); 
   }
 
   handleSetPassword(i){
@@ -197,32 +164,20 @@ class PanelStub extends React.Component
     let modifiedTable = [...this.props.linksTable];
     modifiedTable[i].password = '';
 
-    let data = qs.stringify({
+    let data = {
       action: 'modifyPassword',
       token: this.props.token,
       shortLink: modifiedTable[i].shortLink,
       newPassword: ''
-    });
+    };
 
-    axios.post(http_config.BASE, data, {
-      headers:
-      {
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(() =>
+    http_client.post(data,this.props).then(() =>
       {
         this.props.dispatch({
           type: PASSWORD_REMOVED,
           payload: modifiedTable
         });
-      }).catch(() =>{
-        this.props.history.push('/sign/in');
-        this.props.dispatch(
-          {
-            type: TOKEN_FORGOT
-          }
-        );
-      });   
+      });  
   }
 
   handleInputChange(event)
@@ -239,23 +194,13 @@ class PanelStub extends React.Component
 
     if(this.state.newPassword === this.state.newPasswordRepeat)
     {
-      let data = qs.stringify({
+      let data = {
         action: 'changeUserPassword',
         token: this.props.token,
         newPassword: this.state.newPassword
-      })
-      axios.post(http_config.BASE,data,{
-        headers:{
-          'Content-Type' : 'application/x-www-form-urlencoded'
-        }
-      }).catch(() =>{
-        this.props.history.push('/sign/in');
-        this.props.dispatch(
-          {
-            type: TOKEN_FORGOT
-          }
-        );
-      });  
+      };
+
+      http_client.post(data,this.props);
     }
 
     this.setState({
@@ -267,34 +212,21 @@ class PanelStub extends React.Component
   {
     e.preventDefault();
 
-    let data = qs.stringify({
+    let data = {
       action: 'changeUserEmail',
       token: this.props.token,
       newEmail: this.state.newEmail
-    });
+    };
 
-    axios.post(http_config.BASE,data,{
-      headers:{
-        'Content-Type' : 'application/x-www-form-urlencoded'
-      }
-    }).then(response => 
+    http_client.post(data,this.props).then(response => 
       {
         if(response.status === 200){
           this.props.dispatch({
             type: TOKEN_FORGOT
-          }).then(() =>
-          {
-            this.props.history.push("/sign/in")
-          });
+          })
+          this.props.history.push("/sign/in")
         }
-      }).catch(() =>{
-        this.props.history.push('/sign/in');
-        this.props.dispatch(
-          {
-            type: TOKEN_FORGOT
-          }
-        );
-      });  
+      });
 
     this.setState({
       modifiedField: undefined
@@ -397,4 +329,4 @@ const mapStateToProps = ({token,links}) => {
 
 const Panel = connect(mapStateToProps)(PanelStub);
 
-export default Panel;
+export default withRouter(Panel);
