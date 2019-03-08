@@ -217,7 +217,13 @@ class PanelStub extends React.Component
     }
     catch(error)
     {
-
+      if(error.response.status === 401 || error.response.status === 408)
+      {
+        this.props.dispatch({
+          action: TOKEN_FORGOT
+        });
+        this.props.history.push('/sign/in');
+      }
     }
   }
 

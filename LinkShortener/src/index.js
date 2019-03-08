@@ -23,17 +23,19 @@ if(token === 'undefined' || token === undefined)
 {
   token = null;
 }
-
-try
+else
 {
-  http_client.post({
-    action: 'validateToken',
-    token: token
-  });
-}
-catch(error)
-{
-  token = null;
+  try
+  {
+    http_client.post({
+      action: 'validateToken',
+      token: token
+    });
+  }
+  catch(error)
+  {
+    token = null;
+  }
 }
 
 
