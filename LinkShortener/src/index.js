@@ -9,16 +9,34 @@ import About from './components/about/about'
 import Auth from './components/auth/auth'
 import SignIn from './components/auth/signin'
 import SignUp from './components/auth/signup'
-import Navbar from './components/navbar/navbar';
-import Footer from './components/footer/footer';
-import Panel from './components/panel/panel';
-import ProtectedLink from './components/auth/protectedLink';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import Navbar from './components/navbar/navbar'
+import Footer from './components/footer/footer'
+import Panel from './components/panel/panel'
+import ProtectedLink from './components/auth/protectedLink'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import {http_client} from './http/http_client'
 import reducers from './reducers'
 
-
 let token = localStorage.getItem('token');
+if(token === 'undefined' || token === undefined)
+{
+  token = null;
+}
+
+try
+{
+  http_client.post({
+    action: 'validateToken',
+    token: token
+  });
+}
+catch(error)
+{
+  token = null;
+}
+
+
 const store = createStore(reducers, 
   {
     token:
