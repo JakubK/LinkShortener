@@ -4,12 +4,10 @@ import { NavLink } from 'react-router-dom'
 import {withRouter} from 'react-router'
 import {TOKEN_ACQUIRED} from '../../actions/actions'
 import { connect } from 'react-redux';
-import { http_client } from '../../http/http_client';
-
+import { http_client } from '../../http/http_client'
 
 class SignInStub extends React.Component
 {
-
   constructor()
   {
     super();
@@ -17,6 +15,7 @@ class SignInStub extends React.Component
     this.state = {
       emailAddress: '',
       password: '',
+      errorText: ''
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -41,23 +40,25 @@ class SignInStub extends React.Component
       password: this.state.password
     };
 
-     http_client.post(data, this.props).then(response =>
+    try
+    {
+      const response = await http_client.post(data);
+      if(response.status === 200)
       {
-        //if API returned a token, then store it and redirect the user to the panel 
-        if(response)
-        {
-          if(response.status === 200)
-          {
-            this.props.dispatch(
-              {
-                type: TOKEN_ACQUIRED,
-                payload: response.data
-              }
-            );
-            this.props.history.push('/panel');
-          }
-        }
-      });  
+        this.props.dispatch({
+            type: TOKEN_ACQUIRED,
+            payload: response.data
+          });
+        this.props.history.push('/panel');
+      }
+    }
+    catch(error)
+    {
+      if(error.response.status === 401)
+      {
+        this.setState({errorText:"Incorrect credentials"});
+      }
+    }
   }
 
   render()
@@ -68,6 +69,7 @@ class SignInStub extends React.Component
           <input name="emailAddress" value={this.state.emailAddress} onChange={this.handleInputChange} className="form-input" placeholder="Email" type="text"/>
           <input name="password" value={this.state.password} onChange={this.handleInputChange} className="form-input" placeholder="Password" type="password"/>
           <label className="password-forgot">I forgot my password</label>
+          <p className="error-text">{this.state.errorText}</p>
         </div>
         <div className="action-buttons">
             <div>

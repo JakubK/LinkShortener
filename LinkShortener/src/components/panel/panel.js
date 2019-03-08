@@ -32,7 +32,7 @@ class PanelStub extends React.Component
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  componentDidMount()
+  async componentDidMount()
   {
     //Fetch Links array
     let data = {
@@ -40,40 +40,62 @@ class PanelStub extends React.Component
       token: this.props.token
     };
 
-    http_client.post(data, this.props)
-      .then(response =>
+    try
+    {
+      const response = await http_client.post(data);
+      if(response.status === 200)
       {
-        if(response.status === 200){
-          this.props.dispatch(
-            {
-              type: LINKS_LOADED,
-              payload: response.data
-            }
-          );
-          this.props.history.push('/panel');
-        }
-      });
+        this.props.dispatch(
+          {
+            type: LINKS_LOADED,
+            payload: response.data
+          }
+        );
+      }
+    }
+    catch(error)
+    {
+      if(error.response.status === 401 || error.response.status === 408)
+      {
+        this.props.dispatch({
+          action: TOKEN_FORGOT
+        });
+        this.props.history.push('/sign/in');
+      }
+    }
   }
 
-  handleDelete(i)
+  async handleDelete(i)
   {
     let data = {
       action: 'deleteShortlink',
       shortLink: this.props.linksTable[i].shortLink,
       token: this.props.token
     };
-    http_client.post(data,this.props).then(response =>
+
+    try
+    {
+      const response = await http_client.post(data);
+      if(response.status === 200)
       {
-        if(response.status === 200)
-        {
-          this.props.dispatch(
-            {
-              type: LINK_REMOVED,
-              payload: i
-            }
-          );
-        }
-      });
+        this.props.dispatch(
+          {
+            type: LINK_REMOVED,
+            payload: i
+          }
+        );
+      }
+    }
+    catch(error)
+    {
+      if(error.response.status === 401 || error.response.status === 408)
+      {
+        this.props.dispatch({
+          action: TOKEN_FORGOT
+        });
+        this.props.history.push('/sign/in');
+      }
+    }
   }
 
   handleCopy(i)
@@ -113,7 +135,7 @@ class PanelStub extends React.Component
     }
   }
 
-  handleLinkRenameSubmit(e)
+  async handleLinkRenameSubmit(e)
   {
     e.preventDefault();
 
@@ -140,17 +162,31 @@ class PanelStub extends React.Component
         newLongLink: this.state.longLink
       }
     }
-    http_client.post(data, this.props).then(response =>{
-        if(response.status === 200){
-          this.props.dispatch({
-            type: LINK_CHANGED,
-            payload: modifiedTable
-          });
-        }
-        this.setState({
-          modifiedId: undefined
+
+    try
+    {
+      const response = await http_client.post(data);
+      if(response.status === 200)
+      {
+        this.props.dispatch({
+          type: LINK_CHANGED,
+          payload: modifiedTable
         });
-      }); 
+      }
+      this.setState({
+        modifiedId: undefined
+      });
+    }
+    catch(error)
+    {
+      if(error.response.status === 401 || error.response.status === 408)
+      {
+        this.props.dispatch({
+          action: TOKEN_FORGOT
+        });
+        this.props.history.push('/sign/in');
+      }
+    }
   }
 
   handleSetPassword(i){
@@ -160,7 +196,7 @@ class PanelStub extends React.Component
     });
   }
 
-  handleRemovePassword(i){
+  async handleRemovePassword(i){
     let modifiedTable = [...this.props.linksTable];
     modifiedTable[i].password = '';
 
@@ -171,13 +207,18 @@ class PanelStub extends React.Component
       newPassword: ''
     };
 
-    http_client.post(data,this.props).then(() =>
-      {
-        this.props.dispatch({
-          type: PASSWORD_REMOVED,
-          payload: modifiedTable
-        });
-      });  
+    try
+    {
+      await http_client.post(data);
+      this.props.dispatch({
+        type: PASSWORD_REMOVED,
+        payload: modifiedTable
+      });
+    }
+    catch(error)
+    {
+
+    }
   }
 
   handleInputChange(event)
@@ -188,7 +229,7 @@ class PanelStub extends React.Component
     this.setState({[name]: value});
   }
 
-  handleChangePassword(e)
+  async handleChangePassword(e)
   {
     e.preventDefault();
 
@@ -199,8 +240,21 @@ class PanelStub extends React.Component
         token: this.props.token,
         newPassword: this.state.newPassword
       };
-
-      http_client.post(data,this.props);
+      
+      try
+      {
+        await http_client.post(data,this.props);
+      }
+      catch(error)
+      {
+        if(error.response.status === 401 || error.response.status === 408)
+        {
+          this.props.dispatch({
+            action: TOKEN_FORGOT
+          });
+          this.props.history.push('/sign/in');
+        }
+      }
     }
 
     this.setState({
@@ -208,7 +262,7 @@ class PanelStub extends React.Component
     });
   }
   
-  handleChangeEmail(e)
+  async handleChangeEmail(e)
   {
     e.preventDefault();
 
@@ -218,7 +272,10 @@ class PanelStub extends React.Component
       newEmail: this.state.newEmail
     };
 
-    http_client.post(data,this.props).then(response => 
+    try
+    {
+      const response = await http_client.post(data);
+      if(response.status === 200)
       {
         if(response.status === 200){
           this.props.dispatch({
@@ -226,7 +283,18 @@ class PanelStub extends React.Component
           })
           this.props.history.push("/sign/in")
         }
-      });
+      }
+    }
+    catch(error)
+    {
+      if(error.response.status === 401 || error.response.status === 408)
+      {
+        this.props.dispatch({
+          action: TOKEN_FORGOT
+        });
+        this.props.history.push('/sign/in');
+      }
+    }
 
     this.setState({
       modifiedField: undefined

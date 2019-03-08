@@ -1,7 +1,7 @@
 import React from 'react'
 import './passwordField.css'
 import { connect } from 'react-redux';
-import {PASSWORD_FINISH_SET, PASSWORD_NOT_SET} from '../../actions/actions'
+import {PASSWORD_FINISH_SET, PASSWORD_NOT_SET, TOKEN_FORGOT} from '../../actions/actions'
 import { http_client } from '../../http/http_client'
 import {withRouter} from 'react-router'
 
@@ -28,7 +28,7 @@ class PasswordFieldStub extends React.Component
     this.setState({[name]: value});
   }
 
-  handleSubmit()
+  async handleSubmit()
   {
     let modifiedTable = [...this.props.linksTable];
     modifiedTable[this.props.modifiedRecord].password = this.state.password;
@@ -40,13 +40,24 @@ class PasswordFieldStub extends React.Component
       newPassword: this.state.password
     };
 
-    http_client.post(data,this.props).then(() =>
+    try
+    {
+      await http_client(data);
+      this.props.dispatch({
+        type: PASSWORD_FINISH_SET,
+        payload: modifiedTable
+      });
+    }
+    catch(error)
+    {
+      if(error.response.status === 401 || error.response.status === 408)
       {
         this.props.dispatch({
-          type: PASSWORD_FINISH_SET,
-          payload: modifiedTable
+          action: TOKEN_FORGOT
         });
-      });
+        this.props.history.push('/sign/in');
+      }
+    }
   }
 
   handleClose()

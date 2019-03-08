@@ -13,7 +13,8 @@ class SignUp extends React.Component
     this.state = {
       emailAddress: '',
       password: '',
-      confirmedPassword: ''
+      confirmedPassword: '',
+      errorText: ''
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -36,16 +37,22 @@ class SignUp extends React.Component
       email: this.state.emailAddress,
       password: this.state.password
     };
-    await http_client.post(data, this.props).then(response =>
+
+    try
+    {
+      const response = await http_client.post(data);
+      if(response.status === 201)
       {
-        //if API created an account then redirect to /login
-        
-        //if something went wrong then show the message
-        if(response.status === 201)
-        {
-          this.props.history.push('/sign/in');
-        }
-      });
+        this.props.history.push('/sign/in');
+      }
+    }
+    catch(error)
+    {
+      if(error.response.status === 400)
+      {
+        this.setState({errorText: "The password doesn't meet the requirements"})
+      }
+    }
   }
 
   render()
@@ -56,6 +63,7 @@ class SignUp extends React.Component
           <input name="emailAddress" value={this.state.emailAddress} onChange={this.handleInputChange} className="form-input" placeholder="Email" type="text"/>
           <input name="password" value={this.state.password} onChange={this.handleInputChange} className="form-input" placeholder="Password" type="password"/>
           <input name="confirmedPassword" value={this.state.confirmedPassword} onChange={this.handleInputChange} className="form-input" placeholder="Confirm Password" type="password"/>
+          <p className="error-text">{this.state.errorText}</p>
         </div>
         <div className="action-buttons">
             <div>

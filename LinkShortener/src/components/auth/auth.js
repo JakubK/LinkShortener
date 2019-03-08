@@ -13,8 +13,7 @@ class Auth extends React.Component
             <NavLink activeClassName="selected" to="/sign/in">Sign In</NavLink>
             <NavLink activeClassName="selected" to="/sign/up">Sign Up</NavLink>
           </div>
-          {this.props.children}
-         
+          {this.props.children}       
         </main>
       </div>
     );

@@ -33,7 +33,7 @@
   display: flex;
   justify-content: center;
 
-  bottom: 50px;
+  bottom: 10px;
 
   position: absolute;
 }
@@ -87,4 +87,10 @@
 button:hover
 {
   cursor: pointer;
+}
+
+.error-text
+{
+  color: red;
+  font-size: 12px;
 }

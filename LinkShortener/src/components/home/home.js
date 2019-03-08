@@ -4,6 +4,7 @@ import './home.css'
 import { connect } from 'react-redux'
 import {withRouter} from 'react-router'
 import { http_client } from '../../http/http_client'
+import { TOKEN_FORGOT } from '../../actions/actions';
 
 class HomeStub extends React.Component
 {
@@ -15,10 +16,19 @@ class HomeStub extends React.Component
       longLink: '',
       linkPassword: '',
       shortLink: '',
-      preShortLink: ''
+      preShortLink: '',
+      errorText: ''
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  tokenIsAvailable()
+  {
+    if(this.props.token === undefined || this.props.token === 'undefined' || this.props.token === null || this.props.token === 'null')
+      return false;
+
+    return true;
   }
 
   handleInputChange(event)
@@ -29,9 +39,12 @@ class HomeStub extends React.Component
     this.setState({[name]: value});
   }
 
-  handleSubmit(event)
+  async handleSubmit(event)
   {
     event.preventDefault();
+
+    if(this.state.longLink.length === 0)
+      return;
 
     let data = {
       action: 'createShortlink',
@@ -41,19 +54,34 @@ class HomeStub extends React.Component
       token: this.props.token
     };
 
-    http_client.post(data, this.props).then(response =>
+    if(!this.tokenIsAvailable())
+      data.token = ''
+
+    try
+    {
+      const response = await http_client.post(data);
+      if(response.status === 201)
       {
-        //if API returned a token, then store it and redirect the user to the panel 
-        if(response.status === 201)
-        {
-          //display token from response.data
-          this.setState({
-            shortLink: response.data
-          });
-        }
-      });  
-    
+        this.setState({
+          shortLink: response.data
+        });
+      }
     }
+    catch(error)
+    {
+      if(error.response.status === 401 || error.response.status === 408)
+      {
+        this.props.dispatch({
+          action: TOKEN_FORGOT
+        });
+      }
+      else if(error.response.status === 400)
+      {
+        this.setState({errorText: "This shortlink is already taken. Please try with another."})
+      }
+    }
+    
+  }
 
   handleCopy()
   {
@@ -77,10 +105,11 @@ class HomeStub extends React.Component
         <input onChange={(e) => this.handleInputChange(e)} name="longLink" className="home-input" placeholder="Paste your link here..." type="text"/>
         <input onChange={(e) => this.handleInputChange(e)} name="linkPassword" className="home-input" placeholder="Set password (optional)" type="password"/>
         {
-          this.props.token && 
+          this.tokenIsAvailable() && 
           <div className="shortlink-frame">
             <div className="shortlink-base">{ window.location.protocol + "//" + window.location.host + "/" }</div>
             <input onChange={(e) => this.handleInputChange(e)} name="preShortLink" className="home-input" placeholder="Set shortlink (optional)" type="text"/>
+            <p className="error-text">{this.state.errorText}</p>
           </div>
         }
         <button onClick={(e) => this.handleSubmit(e)} className="btn-shorten">Shorten</button>

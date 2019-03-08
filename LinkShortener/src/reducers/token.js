@@ -9,7 +9,7 @@ const token = (state = {}, action) =>
         }); 
     case TOKEN_FORGOT:
         return Object.assign({}, state, {
-            token: undefined
+            token: null
         });
     default:
         return state;

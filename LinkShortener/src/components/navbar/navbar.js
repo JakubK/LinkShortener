@@ -11,7 +11,6 @@ import {TOKEN_FORGOT} from '../../actions/actions'
 
 class NavbarStub extends React.Component
 {
-
   render()
   {
     return (
@@ -19,36 +18,51 @@ class NavbarStub extends React.Component
       <Link className="nav-brand" to="/">LinkShortener</Link>
       <div className="navbar-buttons">
         <Link to="/about" className="nav-button">About</Link>
-        {(!this.props.token || this.props.token === 'undefined') &&      
+        { !this.tokenIsAvailable() &&      
         <Link to="/sign/in" className="nav-button">Sign in / up</Link>
         }
         {
-          (this.props.token && this.props.token !== 'undefined') &&
+          this.tokenIsAvailable() &&
           <Link to="/panel" className="nav-button">Account</Link>
         }
-        { (this.props.token && this.props.token !== 'undefined') && 
+        { this.tokenIsAvailable() && 
           <button onClick={() => this.handleLogout()} className="nav-button">Log out</button>
         }
       </div>
     </nav>
     )
   }
+  
+  tokenIsAvailable()
+  {
+    if(this.props.token === undefined || this.props.token === 'undefined' || this.props.token === null || this.props.token === 'null')
+      return false;
+      
+    return true;
+  }
 
-  handleLogout()
+  async handleLogout()
   {
     let data = {
       action: 'logUserOut',
       token: this.props.token
     };
 
-    http_client.post(data, this.props).then(() => 
+    try
+    {
+      await http_client.post(data);
+      this.props.dispatch({
+        type: TOKEN_FORGOT
+      });
+      this.props.history.push('/sign/in');
+    }
+    catch(error)
     {
       this.props.dispatch({
         type: TOKEN_FORGOT
       });
-
       this.props.history.push('/sign/in');
-    });
+    }
   }
 }
 
