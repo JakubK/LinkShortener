@@ -42,7 +42,7 @@ class PasswordFieldStub extends React.Component
 
     try
     {
-      await http_client(data);
+      await http_client.post(data);
       this.props.dispatch({
         type: PASSWORD_FINISH_SET,
         payload: modifiedTable
