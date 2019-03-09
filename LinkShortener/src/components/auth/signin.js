@@ -20,6 +20,20 @@ class SignInStub extends React.Component
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.enterFunction = this.enterFunction.bind(this);
+  }
+
+  componentDidMount(){
+    document.addEventListener("keydown", this.enterFunction, false);
+  }
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.enterFunction, false);
+  }
+
+  enterFunction(event){
+    if(event.keyCode === 13) {
+      this.handleSubmit();
+    }
   }
 
   handleInputChange(event)
