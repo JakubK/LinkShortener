@@ -5,12 +5,15 @@
   align-items: center;
 
   height: calc(100vh - 120px);
+  z-index: 100;
+  overflow-y: scroll;
 }
 
 .about-text
 {
   font-size: 25px;
-  width: 50%;
+  min-width: 50%;
+  max-width: 80%;
   text-align: center;
 }
 
@@ -29,4 +32,17 @@
 {
   float: right;
   padding: 10px;
+}
+
+@media only screen and (max-width: 400px) 
+{
+  .about-container
+  {
+   height: calc(100vh - 180px);
+  }
+  .authors
+  {
+    display: flex;
+    flex-direction: column;
+  }
 }
