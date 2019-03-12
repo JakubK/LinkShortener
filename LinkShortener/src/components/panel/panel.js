@@ -189,7 +189,7 @@ class PanelStub extends React.Component
     }
   }
 
-  handleSetPassword(i){
+   handleSetPassword(i){
     this.props.dispatch({
       type: PASSWORD_INIT_SET,
       payload: i
@@ -374,7 +374,7 @@ class PanelStub extends React.Component
                   <button onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
                   {
                     element.password !== '' && 
-                    <button onClick={() => this.handleRemovePassword(i)}>Remove password</button>
+                    <button onClick={async() => await this.handleRemovePassword(i)}>Remove password</button>
                   }
                   {
                     element.password === '' && 

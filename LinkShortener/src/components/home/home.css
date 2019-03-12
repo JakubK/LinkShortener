@@ -8,10 +8,12 @@
 .home-container
 {
   padding-top: 70px;
-  width: 60%;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  min-width: 60%;
+  max-width: 90%;
 }
 
 .home-input
@@ -28,6 +30,8 @@
   width: 100%;
   font-size: 30px;
   display: block;
+
+
 }
 
 .home-input:focus
@@ -43,8 +47,11 @@
   border: none;
   outline: none;
   color: white;
+  
   height: 45px;
-  width: 45%;
+
+  width: 90%;
+
   margin-top: 30px;
   font-size: 1em;
 }
@@ -100,4 +107,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+@media only screen and (max-width: 400px) 
+{
+  .home
+  {
+   height: calc(100vh - 180px);
+  }
+  .home-input
+  {
+    font-size: 12px;
+  }
 }

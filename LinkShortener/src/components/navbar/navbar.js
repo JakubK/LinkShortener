@@ -50,11 +50,14 @@ class NavbarStub extends React.Component
 
     try
     {
-      await http_client.post(data);
-      this.props.dispatch({
-        type: TOKEN_FORGOT
-      });
-      this.props.history.push('/sign/in');
+      const response = await http_client.post(data);
+      if(response)
+      {
+        this.props.dispatch({
+          type: TOKEN_FORGOT
+        });
+        this.props.history.push('/sign/in');
+      }
     }
     catch(error)
     {

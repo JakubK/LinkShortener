@@ -41,3 +41,22 @@
   color: #9B59B6;
   cursor: pointer;
 }
+
+@media only screen and (max-width: 400px) 
+{
+  .navbar-buttons .nav-button
+  {
+    padding: 5px;
+    white-space: nowrap;
+  }
+  .navbar, .navbar-buttons
+  {
+    padding: 5px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+}
