@@ -322,7 +322,7 @@ class PanelStub extends React.Component
           <div>
             <label>example@example.com</label><br/>
             {this.state.modifiedField !== 'email' &&
-            <button onClick={() => this.setState({modifiedField: 'email'})}>Change</button>
+            <button className="btn-change" onClick={() => this.setState({modifiedField: 'email'})}>Change</button>
             }
             {this.state.modifiedField === 'email' &&
               <form onSubmit={(e) => this.handleChangeEmail(e)}>
@@ -333,7 +333,7 @@ class PanelStub extends React.Component
             }
           </div>
           {this.state.modifiedField !== 'password' && 
-          <button onClick={() => this.setState({modifiedField : 'password'})}>Reset password</button>
+          <button className="btn-reset" onClick={() => this.setState({modifiedField : 'password'})}>Reset password</button>
           }
           {this.state.modifiedField === 'password' &&
             <form onSubmit={(e) => this.handleChangePassword(e)}>
@@ -371,16 +371,16 @@ class PanelStub extends React.Component
                   { (this.state.modifiedId === i && this.state.modifiedField === 'longLink') && <div><input name="longLink" onChange={(e) => this.handleInputChange(e)} type="text"/><button onClick={(e) => this.handleLinkRenameSubmit(e)}>Submit</button></div>}                
                 </td>
                 <td>
-                  <button onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
+                  <button className="action-copy" onClick={() => this.handleCopy(i)}>Copy to clipboard</button>
                   {
                     element.password !== '' && 
-                    <button onClick={async() => await this.handleRemovePassword(i)}>Remove password</button>
+                    <button className="action-password" onClick={async() => await this.handleRemovePassword(i)}>Remove password</button>
                   }
                   {
                     element.password === '' && 
-                    <button onClick={() => this.handleSetPassword(i)}>Set password</button>
+                    <button className="action-password" onClick={() => this.handleSetPassword(i)}>Set password</button>
                   }
-                  <button onClick={() => this.handleDelete(i)}>Delete</button>
+                  <button className="action-delete" onClick={() => this.handleDelete(i)}>Delete</button>
                 </td>
               </tr>
                ))

@@ -42,7 +42,7 @@
   width: 80%;
   background: #FFFFFF;
   padding: 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .links-table
@@ -72,4 +72,73 @@ td:nth-child(1):hover,td:nth-child(2):hover
 {
   background: darkgray;
   cursor: pointer;
+}
+
+.action-copy, .action-delete, .action-password
+{
+  padding: 10px;
+  margin: 2px;
+  border: none;
+  outline: none;
+}
+
+.action-copy:hover
+{
+  background: orange;
+  color: white;
+}
+
+.action-delete:hover
+{
+  background: darkred;
+  color: white;
+}
+
+.action-password:hover
+{
+  background: darkslateblue;
+  color: white;
+}
+
+.btn-reset, .btn-change
+{
+  padding: 10px;
+  outline: none;
+  border: none;
+}
+
+.btn-reset:hover, .btn-change:hover
+{
+  color: white;
+  background: violet;
+}
+
+@media only screen and (max-width: 900px) 
+{
+  .panel-container
+  {
+    flex-direction: column;
+  }
+  .account-settings
+  {
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .profile-frame
+  {
+    display: none;
+  }
+  .account-links
+  {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 400px) 
+{
+  .panel-container
+  {
+   height: calc(100vh - 180px);
+  }
 }

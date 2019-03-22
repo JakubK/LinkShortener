@@ -45,8 +45,6 @@
   background: #8E44AD;
 }
 
-
-
 .protected-panel
 {
   display: flex;
@@ -75,4 +73,21 @@
 .icon-lock path 
 {
   fill: #7F8C8D;
+}
+
+@media only screen and (max-width: 600px) 
+{
+  .panel-options
+  {
+    flex-direction: column;
+  }
+  .panel-options a
+  {
+    width: 100%;
+  }
+
+  .auth-icon
+  {
+    display: none;
+  }
 }

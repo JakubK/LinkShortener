@@ -94,3 +94,10 @@ button:hover
   color: red;
   font-size: 12px;
 }
+
+@media only screen and (max-width: 400px) 
+{
+  .form-input{
+    font-size: 10px;
+  }
+}

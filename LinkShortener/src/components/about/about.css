@@ -6,7 +6,7 @@
 
   height: calc(100vh - 120px);
   z-index: 100;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .about-text
